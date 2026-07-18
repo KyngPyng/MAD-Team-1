@@ -19,6 +19,25 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: assets/images/teamsync_logo.png
+  web:
+    generate: true
+    image_path: assets/images/teamsync_logo.png
+    background_color: '#1E1D22'
+    theme_color: '#6C63FF'
+  windows:
+    generate: true
+    image_path: assets/images/teamsync_logo.png
+    icon_size: 256
+  macos:
+    generate: true
+    image_path: assets/images/teamsync_logo.png
 
 flutter:
   uses-material-design: true
