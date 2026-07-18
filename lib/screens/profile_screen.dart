@@ -5,12 +5,15 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String userRole = (ModalRoute.of(context)?.settings.arguments as String?) ?? 'Learner';
+    final String userRole =
+        (ModalRoute.of(context)?.settings.arguments as String?) ?? 'Learner';
     final bool isAdmin = userRole == 'Admin';
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isAdmin ? 'Admin Management Profile' : 'teamSync - My Profile'),
+        title: Text(
+          isAdmin ? 'Admin Management Profile' : 'teamSync - My Profile',
+        ),
         backgroundColor: Colors.deepPurple.shade50,
       ),
       body: SingleChildScrollView(
@@ -19,11 +22,13 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 16),
-            
+
             // Dynamic Profile Image Container
             CircleAvatar(
               radius: 60,
-              backgroundColor: isAdmin ? Colors.indigo.shade100 : Colors.deepPurple.shade100,
+              backgroundColor: isAdmin
+                  ? Colors.indigo.shade100
+                  : Colors.deepPurple.shade100,
               child: Icon(
                 isAdmin ? Icons.admin_panel_settings : Icons.person,
                 size: 80,
@@ -31,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Custom Metadata display blocks
             Text(
               isAdmin ? 'Director Operations Office' : 'Alex Mensah',
@@ -39,7 +44,9 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              isAdmin ? 'System Administrator Tier 1' : 'Learner (Team Lead) • Excelerate Cohort 4',
+              isAdmin
+                  ? 'System Administrator Tier 1'
+                  : 'Learner (Team Lead) • Excelerate Cohort 4',
               style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
             const SizedBox(height: 32),
@@ -47,15 +54,35 @@ class ProfileScreen extends StatelessWidget {
             // Metric UI updates conditionally based on dynamic permission level
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: isAdmin 
-                ? [
-                    _buildMetricCard(context, 'Global', 'Scope Access', Colors.indigo),
-                    _buildMetricCard(context, 'Level 4', 'Security Clearance', Colors.indigo),
-                  ]
-                : [
-                    _buildMetricCard(context, '12/15', 'Tasks Done', Colors.deepPurple),
-                    _buildMetricCard(context, '95%', 'Attendance', Colors.deepPurple),
-                  ],
+              children: isAdmin
+                  ? [
+                      _buildMetricCard(
+                        context,
+                        'Global',
+                        'Scope Access',
+                        Colors.indigo,
+                      ),
+                      _buildMetricCard(
+                        context,
+                        'Level 4',
+                        'Security Clearance',
+                        Colors.indigo,
+                      ),
+                    ]
+                  : [
+                      _buildMetricCard(
+                        context,
+                        '12/15',
+                        'Tasks Done',
+                        Colors.deepPurple,
+                      ),
+                      _buildMetricCard(
+                        context,
+                        '95%',
+                        'Attendance',
+                        Colors.deepPurple,
+                      ),
+                    ],
             ),
             const SizedBox(height: 32),
             const Divider(),
@@ -103,13 +130,22 @@ class ProfileScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   side: const BorderSide(color: Colors.red),
                   foregroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/',
+                    (route) => false,
+                  );
                 },
                 icon: const Icon(Icons.logout),
-                label: const Text('Log Out', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                label: const Text(
+                  'Log Out',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
@@ -118,10 +154,15 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricCard(BuildContext context, String value, String label, Color accentColor) {
+  Widget _buildMetricCard(
+    BuildContext context,
+    String value,
+    String label,
+    Color accentColor,
+  ) {
     return Card(
       elevation: 2,
-      color: accentColor.withOpacity(0.08),
+      color: accentColor.withValues(alpha: 0.08),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
