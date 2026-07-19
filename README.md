@@ -33,9 +33,13 @@ The navigation pipeline utilizes role-based routing payloads to serve specific d
 
 
 
+```
+
+
+
+
 
 ---
-
 # Week 2 Progress
 
 ## Working UI Prototype
