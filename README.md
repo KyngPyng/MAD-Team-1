@@ -119,7 +119,7 @@ The following screenshots showcase the current implementation of the Week 2 UI p
 <b>Login Screen</b>
 </td>
 <td align="center">
-<img src="assets/screenshots/Home.png" width="220" alt="Home Dashboard"><br>
+<img src="assets/screenshots/home.png" width="220" alt="Home Dashboard"><br>
 <b>Home Dashboard</b>
 </td>
 </tr>
