@@ -130,7 +130,7 @@ The following screenshots showcase the current implementation of the Week 2 UI p
 <b>Program Listing</b>
 </td>
 <td align="center">
-<img src="assets/screenshots/program_details.png" width="220" alt="Program Details"><br>
+<img src="assets/screenshots/program_detail.png" width="220" alt="Program Details"><br>
 <b>Program Details</b>
 </td>
 </tr>
