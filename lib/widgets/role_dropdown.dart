@@ -27,7 +27,6 @@ class RoleDropdown extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         items: const [
           DropdownMenuItem(value: "Student", child: Text("Student")),
-          DropdownMenuItem(value: "Mentor", child: Text("Mentor")),
           DropdownMenuItem(value: "Admin", child: Text("Admin")),
         ],
         onChanged: onChanged,

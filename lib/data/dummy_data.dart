@@ -1,3 +1,4 @@
+// Inside your project data file (e.g., lib/data/project_dummy_data.dart)
 import '../models/project_model.dart';
 import '../models/task_model.dart';
 
@@ -16,14 +17,17 @@ const List<ProjectModel> projects = [
     ],
   ),
   ProjectModel(
-    title: 'Team Dashboard',
-    description: 'Fix sidebar navigation bugs and update user permissions.',
+    title: 'Nexus Mobile App',
+    description: 'Set up global state management, design scalable UI components, and integrate foundational app features.',
     image: 'assets/images/project2.png',
-    status: 'In Review',
-    progress: .82,
-    teamMembers: ['AM', 'RK', 'TJ'],
-    dueDate: 'Jun 24',
-    tasks: [TaskModel(title: 'Review pull request #1023', dueDate: 'Jun 20')],
+    status: 'In Progress',
+    progress: .35,
+    teamMembers: ['AM', 'RK', 'TJ', 'OS'], // Represents Sub Group members
+    dueDate: 'Jul 15',
+    tasks: [
+      TaskModel(title: 'Initialize repository layout and basic routing', dueDate: 'Today'),
+      TaskModel(title: 'Review initial sprint layout with sub team', dueDate: 'Tomorrow'),
+    ],
   ),
   ProjectModel(
     title: 'Fitness Tracker',

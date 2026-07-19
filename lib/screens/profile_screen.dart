@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/login/login_page.dart'; // Make sure this path correctly points to your LoginPage file
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -135,9 +136,11 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/',
+                  // UPDATED: Destroys the entire layout stack from the root context shell 
+                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
                     (route) => false,
                   );
                 },

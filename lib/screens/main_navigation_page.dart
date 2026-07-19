@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../widgets/floating_bottom_nav.dart';
 import 'home/home_page.dart';
-import 'profile_screen.dart';
 import 'programs/programs_page.dart';
 import 'projects/projects_page.dart';
+import 'teams/team_dashboard_page.dart';
+import '../data/program_dummy_data.dart'; // Imports the dummy data for the team dashboard model
 
 class MainNavigationPage extends StatefulWidget {
   const MainNavigationPage({super.key});
@@ -16,6 +17,7 @@ class MainNavigationPage extends StatefulWidget {
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int _currentIndex = 0;
 
+  // RESTORED: Increased back to 4 slots to match the new item count
   final _navigatorKeys = List.generate(4, (_) => GlobalKey<NavigatorState>());
 
   @override
@@ -24,7 +26,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       const HomePage(),
       const ProgramsPage(),
       const ProjectsPage(),
-      const ProfileScreen(),
+      TeamDashboardPage(program: programs.first), // NEW: Direct top-level access slot
     ];
 
     return PopScope(

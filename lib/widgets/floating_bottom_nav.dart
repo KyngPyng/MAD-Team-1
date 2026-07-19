@@ -1,5 +1,5 @@
+import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
-
 import '../core/constants/app_colors.dart';
 
 class FloatingBottomNav extends StatelessWidget {
@@ -16,7 +16,6 @@ class FloatingBottomNav extends StatelessWidget {
     (Icons.home_rounded, "Home"),
     (Icons.menu_book_rounded, "Programs"),
     (Icons.folder_rounded, "Projects"),
-    (Icons.person_rounded, "Profile"),
   ];
 
   @override
@@ -27,54 +26,91 @@ class FloatingBottomNav extends StatelessWidget {
         child: Container(
           height: 76,
           decoration: BoxDecoration(
-            color: Colors.white,
+            // Semi-transparent white background
+            color: Colors.white.withOpacity(0.3),
             borderRadius: BorderRadius.circular(40),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: .08),
+                color: Colors.black.withOpacity(0.04),
                 blurRadius: 25,
                 offset: const Offset(0, 10),
               ),
             ],
           ),
-          child: Row(
-            children: List.generate(_items.length, (index) {
-              final selected = currentIndex == index;
-              final item = _items[index];
+          // ClipRRect ensures the blur effect stays contained within the rounded corners
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final totalWidth = constraints.maxWidth;
+                  final itemWidth = totalWidth / _items.length;
 
-              return Expanded(
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(40),
-                  onTap: () => onTap(index),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      gradient: selected ? AppColors.gradient : null,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          item.$1,
-                          color: selected ? Colors.white : Colors.grey,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          item.$2,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: selected ? Colors.white : Colors.grey,
+                  return Stack(
+                    children: [
+                      // The Sliding Purple Pill Background
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCubic,
+                        left: currentIndex * itemWidth + 8,
+                        top: 8,
+                        bottom: 8,
+                        width: itemWidth - 16,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: AppColors.gradient,
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }),
+                      ),
+
+                      // The Interactive Text and Icons
+                      Row(
+                        children: List.generate(_items.length, (index) {
+                          final selected = currentIndex == index;
+                          final item = _items[index];
+
+                          return Expanded(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(40),
+                              onTap: () => onTap(index),
+                              child: Container(
+                                margin: const EdgeInsets.all(8),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    AnimatedDefaultTextStyle(
+                                      duration: const Duration(milliseconds: 200),
+                                      style: TextStyle(
+                                        color: selected ? Colors.white : Colors.grey,
+                                      ),
+                                      child: Icon(
+                                        item.$1,
+                                        color: selected ? Colors.white : Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      item.$2,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: selected ? Colors.white : Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),

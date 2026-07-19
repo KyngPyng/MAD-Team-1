@@ -5,6 +5,7 @@ import '../../data/dummy_data.dart';
 import '../../data/program_dummy_data.dart';
 import '../../screens/programs/program_details_page.dart';
 import '../../screens/projects/project_details_page.dart';
+import '../../screens/teams/team_dashboard_page.dart'; 
 import '../../widgets/greeting_section.dart';
 import '../../widgets/home_appbar.dart';
 import '../../widgets/program_card.dart';
@@ -68,21 +69,50 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: activeProjects.length,
                 separatorBuilder: (_, _) => const SizedBox(width: 18),
-                itemBuilder: (context, index) => ProjectCard(
-                  project: activeProjects[index],
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          ProjectDetailsPage(project: activeProjects[index]),
-                    ),
-                  ),
-                ),
+                itemBuilder: (context, index) {
+                  final currentProject = activeProjects[index];
+                  
+                  return ProjectCard(
+                    project: currentProject,
+                    onTap: () {
+                      if (currentProject.title == "Team Dashboard") {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => TeamDashboardPage(
+                              program: programs.first, 
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ProjectDetailsPage(project: currentProject),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
               ),
             ),
             const SizedBox(height: 35),
             const SectionHeader(title: 'Upcoming Tasks'),
             const SizedBox(height: 18),
-            ...upcomingTasks.map((task) => TaskTile(task: task)),
+            
+            // Updated to find the matching project title for each task item
+            ...upcomingTasks.map((task) {
+              final parentProject = activeProjects.firstWhere(
+                (project) => project.tasks.any((t) => t.title == task.title && t.dueDate == task.dueDate),
+                orElse: () => activeProjects.first,
+              );
+
+              return TaskTile(
+                task: task,
+                programName: parentProject.title,
+              );
+            }),
+            
             const SizedBox(height: 20),
             const SectionHeader(title: 'Recent Activity'),
             const Card(
