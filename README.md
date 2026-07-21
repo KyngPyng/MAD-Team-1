@@ -15,6 +15,13 @@ The primary objective of **teamSync** is to bridge the gap between complex web-b
 *   **Sprint Breakdown Checklists:** Offers a granular look into specific task requirements, sub-tasks, and individual milestone completion statuses.
 *   **Adaptive View Filters:** Allows users to parse tasks instantly by completion state (All, In Progress, Completed, Planning) to maximize focus.
 
+## This Week's Update
+
+* Program listing and program details now load from `assets/data/mock_data.json` through a shared repository.
+* The home, projects, and team dashboard screens now consume the same JSON-backed data source.
+* A validated feedback form was added to the profile screen.
+* Basic loading/error handling was added for mock data parsing so the UI can fall back to empty states if the JSON asset is unavailable.
+
 ## Application Architecture & User Flow
 
 The navigation pipeline utilizes role-based routing payloads to serve specific dashboard layouts depending on the user type:
@@ -178,4 +185,3 @@ lib/
 ---
 
 This repository represents the Week 2 deliverable for the **Excelerate Mobile App Development with Flutter Virtual Internship**, demonstrating the transition from low-fidelity wireframes to a functional Flutter UI prototype.
-

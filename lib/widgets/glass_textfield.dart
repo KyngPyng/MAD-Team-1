@@ -8,6 +8,7 @@ class GlassTextField extends StatefulWidget {
   final bool isPassword;
   final TextEditingController? controller;
   final TextInputType keyboardType;
+  final String? Function(String?)? validator;
 
   const GlassTextField({
     super.key,
@@ -16,6 +17,7 @@ class GlassTextField extends StatefulWidget {
     this.isPassword = false,
     this.controller,
     this.keyboardType = TextInputType.text,
+    this.validator,
   });
 
   @override
@@ -39,10 +41,12 @@ class _GlassTextFieldState extends State<GlassTextField> {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Colors.white.withValues(alpha: .75)),
       ),
-      child: TextField(
+      child: TextFormField(
         controller: widget.controller,
         keyboardType: widget.keyboardType,
         obscureText: obscure,
+        validator: widget.validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: const TextStyle(color: AppColors.textSecondary),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../data/mock_data_repository.dart';
 import '../../models/program_model.dart';
-import '../../data/dummy_data.dart';
 import '../../widgets/task_tile.dart';
 
 class TeamDashboardPage extends StatelessWidget {
@@ -12,7 +12,9 @@ class TeamDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeProjects = projects.where((p) => p.progress < 1).toList();
+    final activeProjects = MockDataRepository.instance.projects
+        .where((p) => p.progress < 1)
+        .toList();
     final upcomingTasks = activeProjects.expand((p) => p.tasks).take(4);
 
     final teamMembers = [
@@ -24,9 +26,27 @@ class TeamDashboardPage extends StatelessWidget {
 
     // Placeholder messages data structure for the Chat tab
     final chatMessages = [
-      {'sender': 'Alex Rivera', 'msg': 'Hey team, just uploaded the updated UI wireframes to the shared drive.', 'time': '10:24 AM', 'isMe': false},
-      {'sender': 'Anil', 'msg': 'Awesome, thanks Alex! I will review the sidebar changes before the sync meeting.', 'time': '10:26 AM', 'isMe': true},
-      {'sender': 'Sarah Chen', 'msg': 'Perfect. I can start working on frontend components right after.', 'time': '11:02 AM', 'isMe': false},
+      {
+        'sender': 'Alex Rivera',
+        'msg':
+            'Hey team, just uploaded the updated UI wireframes to the shared drive.',
+        'time': '10:24 AM',
+        'isMe': false,
+      },
+      {
+        'sender': 'Anil',
+        'msg':
+            'Awesome, thanks Alex! I will review the sidebar changes before the sync meeting.',
+        'time': '10:26 AM',
+        'isMe': true,
+      },
+      {
+        'sender': 'Sarah Chen',
+        'msg':
+            'Perfect. I can start working on frontend components right after.',
+        'time': '11:02 AM',
+        'isMe': false,
+      },
     ];
 
     return DefaultTabController(
@@ -37,7 +57,10 @@ class TeamDashboardPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.black,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
@@ -62,7 +85,10 @@ class TeamDashboardPage extends StatelessWidget {
                   unselectedLabelColor: Colors.grey,
                   indicatorColor: const Color(0xFF7B7BFF),
                   indicatorWeight: 3,
-                  labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  labelStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                   tabs: const [
                     Tab(text: "Upcoming Tasks"),
                     Tab(text: "Team Members"),
@@ -78,9 +104,7 @@ class TeamDashboardPage extends StatelessWidget {
             // Tab 1: Tasks View
             ListView(
               padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
-              children: [
-                ...upcomingTasks.map((task) => TaskTile(task: task)),
-              ],
+              children: [...upcomingTasks.map((task) => TaskTile(task: task))],
             ),
 
             // Tab 2: Team Members View
@@ -102,16 +126,25 @@ class TeamDashboardPage extends StatelessWidget {
                       backgroundColor: const Color(0xFF7B7BFF),
                       child: Text(
                         member['initials']!,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     title: Text(
                       member['name']!,
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
                     subtitle: Text(
                       member['role']!,
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 );
@@ -123,14 +156,19 @@ class TeamDashboardPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 20,
+                    ),
                     itemCount: chatMessages.length,
                     itemBuilder: (context, index) {
                       final chat = chatMessages[index];
                       final isMe = chat['isMe'] as bool;
 
                       return Align(
-                        alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                        alignment: isMe
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 16),
                           constraints: BoxConstraints(
@@ -138,7 +176,9 @@ class TeamDashboardPage extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: isMe ? const Color(0xFF7B7BFF) : const Color(0xFFF1F2F9),
+                            color: isMe
+                                ? const Color(0xFF7B7BFF)
+                                : const Color(0xFFF1F2F9),
                             borderRadius: BorderRadius.only(
                               topLeft: const Radius.circular(16),
                               topRight: const Radius.circular(16),
@@ -173,7 +213,9 @@ class TeamDashboardPage extends StatelessWidget {
                                 child: Text(
                                   chat['time'] as String,
                                   style: TextStyle(
-                                    color: isMe ? Colors.white70 : Colors.black38,
+                                    color: isMe
+                                        ? Colors.white70
+                                        : Colors.black38,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -185,7 +227,7 @@ class TeamDashboardPage extends StatelessWidget {
                     },
                   ),
                 ),
-                
+
                 // Bottom Input Message Field
                 Container(
                   padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
@@ -199,7 +241,10 @@ class TeamDashboardPage extends StatelessWidget {
                             hintStyle: const TextStyle(color: Colors.grey),
                             fillColor: const Color(0xFFF1F2F9),
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 14,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
@@ -212,7 +257,11 @@ class TeamDashboardPage extends StatelessWidget {
                         radius: 24,
                         backgroundColor: const Color(0xFF7B7BFF),
                         child: IconButton(
-                          icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                          icon: const Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                           onPressed: () {
                             // Action handle for sending a message
                           },

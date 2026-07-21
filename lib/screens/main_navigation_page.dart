@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../data/mock_data_repository.dart';
 import '../widgets/floating_bottom_nav.dart';
 import 'home/home_page.dart';
 import 'programs/programs_page.dart';
 import 'projects/projects_page.dart';
 import 'teams/team_dashboard_page.dart';
-import '../data/program_dummy_data.dart'; // Imports the dummy data for the team dashboard model
 
 class MainNavigationPage extends StatefulWidget {
   const MainNavigationPage({super.key});
@@ -26,7 +26,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       const HomePage(),
       const ProgramsPage(),
       const ProjectsPage(),
-      TeamDashboardPage(program: programs.first), // NEW: Direct top-level access slot
+      TeamDashboardPage(program: MockDataRepository.instance.programs.first),
     ];
 
     return PopScope(

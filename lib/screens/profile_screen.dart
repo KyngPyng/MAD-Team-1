@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/login/login_page.dart'; // Make sure this path correctly points to your LoginPage file
+import 'feedback/feedback_form_page.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -105,6 +106,16 @@ class ProfileScreen extends StatelessWidget {
                 subtitle: 'Manage active system allocations.',
                 color: Colors.indigo,
               ),
+              _buildSettingsTile(
+                context,
+                icon: Icons.feedback_outlined,
+                title: 'Send Feedback',
+                subtitle: 'Tell us what could be better.',
+                color: Colors.indigo,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const FeedbackFormPage()),
+                ),
+              ),
             ] else ...[
               _buildSettingsTile(
                 context,
@@ -119,6 +130,16 @@ class ProfileScreen extends StatelessWidget {
                 title: 'Slack Sync Alerts',
                 subtitle: 'Enabled (15 mins prior to Daily Sync)',
                 color: Colors.deepPurple,
+              ),
+              _buildSettingsTile(
+                context,
+                icon: Icons.feedback_outlined,
+                title: 'Send Feedback',
+                subtitle: 'Share your thoughts with the team.',
+                color: Colors.deepPurple,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const FeedbackFormPage()),
+                ),
               ),
             ],
             const SizedBox(height: 40),
@@ -136,11 +157,9 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  // UPDATED: Destroys the entire layout stack from the root context shell 
+                  // UPDATED: Destroys the entire layout stack from the root context shell
                   Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                     (route) => false,
                   );
                 },
@@ -196,13 +215,14 @@ class ProfileScreen extends StatelessWidget {
     required String title,
     required String subtitle,
     required Color color,
+    VoidCallback? onTap,
   }) {
     return ListTile(
       leading: Icon(icon, color: color),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () {},
+      onTap: onTap ?? () {},
     );
   }
 }

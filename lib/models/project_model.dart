@@ -20,4 +20,20 @@ class ProjectModel {
     this.tasks = const [],
     this.dueDate = '',
   });
+
+  factory ProjectModel.fromJson(Map<String, dynamic> json) {
+    return ProjectModel(
+      title: json['title'] as String,
+      description: json['description'] as String,
+      image: json['image'] as String,
+      status: json['status'] as String,
+      progress: (json['progress'] as num).toDouble(),
+      teamMembers: (json['teamMembers'] as List<dynamic>? ?? const [])
+          .cast<String>(),
+      tasks: (json['tasks'] as List<dynamic>? ?? const [])
+          .map((task) => TaskModel.fromJson(task as Map<String, dynamic>))
+          .toList(growable: false),
+      dueDate: (json['dueDate'] as String?) ?? '',
+    );
+  }
 }

@@ -87,7 +87,8 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                           const SizedBox(height: 2),
                           Text(
                             "Sub Team 7 Workspace",
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),

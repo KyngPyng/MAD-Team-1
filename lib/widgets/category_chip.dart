@@ -21,10 +21,7 @@ class CategoryChip extends StatelessWidget {
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
         transitionBuilder: (Widget child, Animation<double> animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
         child: Container(
           key: ValueKey<bool>(selected),

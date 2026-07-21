@@ -81,13 +81,19 @@ class FloatingBottomNav extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     AnimatedDefaultTextStyle(
-                                      duration: const Duration(milliseconds: 200),
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
                                       style: TextStyle(
-                                        color: selected ? Colors.white : Colors.grey,
+                                        color: selected
+                                            ? Colors.white
+                                            : Colors.grey,
                                       ),
                                       child: Icon(
                                         item.$1,
-                                        color: selected ? Colors.white : Colors.grey,
+                                        color: selected
+                                            ? Colors.white
+                                            : Colors.grey,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -96,7 +102,9 @@ class FloatingBottomNav extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600,
-                                        color: selected ? Colors.white : Colors.grey,
+                                        color: selected
+                                            ? Colors.white
+                                            : Colors.grey,
                                       ),
                                     ),
                                   ],

@@ -1,8 +1,8 @@
 // Inside lib/widgets/home_appbar.dart
 import 'package:flutter/material.dart';
+import '../data/mock_data_repository.dart';
 import '../screens/teams/team_dashboard_page.dart';
 import '../screens/profile_screen.dart'; // Import your profile screen here
-import '../data/program_dummy_data.dart'; // To access your programs list
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
@@ -16,7 +16,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: const Text(
         'Workspace',
         style: TextStyle(
-          color: Colors.black, 
+          color: Colors.black,
           fontWeight: FontWeight.bold,
           fontSize: 22,
         ),
@@ -24,12 +24,16 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         // The Team Dashboard overlay trigger icon
         IconButton(
-          icon: const Icon(Icons.groups_rounded, color: Color(0xFF7B7BFF), size: 28),
+          icon: const Icon(
+            Icons.groups_rounded,
+            color: Color(0xFF7B7BFF),
+            size: 28,
+          ),
           tooltip: 'Select Sub Group',
           onPressed: () => _showSubGroupSelection(context),
         ),
         const SizedBox(width: 4),
-        
+
         // Interactive Profile Tab Button
         GestureDetector(
           onTap: () {
@@ -59,7 +63,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   void _showSubGroupSelection(BuildContext context) {
     // Filters out only tracks the student is actively enrolled in
-    final activeTracks = programs.where((p) => p.isEnrolled).toList();
+    final activeTracks = MockDataRepository.instance.programs
+        .where((p) => p.isEnrolled)
+        .toList();
 
     showModalBottomSheet(
       context: context,
@@ -76,7 +82,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               const Text(
                 'Select Team Workspace',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
               const SizedBox(height: 6),
               Text(
@@ -102,7 +112,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                               Navigator.pop(context); // Dismiss selection sheet
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => TeamDashboardPage(program: track),
+                                  builder: (_) =>
+                                      TeamDashboardPage(program: track),
                                 ),
                               );
                             },
@@ -116,29 +127,45 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: const Color(0xFF7B7BFF).withOpacity(0.15),
-                                    child: const Icon(Icons.hub_rounded, color: Color(0xFF7B7BFF)),
+                                    backgroundColor: const Color(
+                                      0xFF7B7BFF,
+                                    ).withOpacity(0.15),
+                                    child: const Icon(
+                                      Icons.hub_rounded,
+                                      color: Color(0xFF7B7BFF),
+                                    ),
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           track.title,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
                                           '${track.level} • Sub Group 7',
-                                          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontSize: 12,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+                                  const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 14,
+                                    color: Colors.grey,
+                                  ),
                                 ],
                               ),
                             ),

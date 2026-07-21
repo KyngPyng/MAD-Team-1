@@ -8,4 +8,12 @@ class TaskModel {
     required this.dueDate,
     this.completed = false,
   });
+
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
+      title: json['title'] as String,
+      dueDate: json['dueDate'] as String,
+      completed: (json['completed'] as bool?) ?? false,
+    );
+  }
 }

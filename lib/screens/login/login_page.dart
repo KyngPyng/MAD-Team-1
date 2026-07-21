@@ -19,11 +19,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // Roles match the dynamic string checks in ProfileScreen ('Learner' / 'Admin')
   String role = "Learner"; 
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +66,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: .18),
+                                    color: AppColors.primary.withValues(
+                                      alpha: .18,
+                                    ),
                                     blurRadius: 36,
                                     offset: const Offset(0, 18),
                                   ),
@@ -68,9 +78,15 @@ class _LoginPageState extends State<LoginPage> {
                                 children: [
                                   const LogoCard(),
                                   const SizedBox(height: 28),
-                                  Text("Welcome Back", style: AppTextStyles.heading),
+                                  Text(
+                                    "Welcome Back",
+                                    style: AppTextStyles.heading,
+                                  ),
                                   const SizedBox(height: 8),
-                                  Text("Sign in to continue", style: AppTextStyles.subtitle),
+                                  Text(
+                                    "Sign in to continue",
+                                    style: AppTextStyles.subtitle,
+                                  ),
                                   const SizedBox(height: 32),
 
                                   // Animated Role Selector Pill
@@ -82,14 +98,20 @@ class _LoginPageState extends State<LoginPage> {
                                       return Container(
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          color: Colors.black.withValues(alpha: 0.05),
-                                          borderRadius: BorderRadius.circular(14),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.05,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
                                         ),
                                         child: Stack(
                                           children: [
                                             // Sliding background selector highlight
                                             AnimatedPositioned(
-                                              duration: const Duration(milliseconds: 250),
+                                              duration: const Duration(
+                                                milliseconds: 250,
+                                              ),
                                               curve: Curves.easeInOutCubic,
                                               left: isStudent ? 4 : (width / 2),
                                               top: 4,
@@ -98,12 +120,19 @@ class _LoginPageState extends State<LoginPage> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(10),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                   boxShadow: [
                                                     BoxShadow(
-                                                      color: Colors.black.withValues(alpha: 0.08),
+                                                      color: Colors.black
+                                                          .withValues(
+                                                            alpha: 0.08,
+                                                          ),
                                                       blurRadius: 4,
-                                                      offset: const Offset(0, 2),
+                                                      offset: const Offset(
+                                                        0,
+                                                        2,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -114,33 +143,71 @@ class _LoginPageState extends State<LoginPage> {
                                               children: [
                                                 Expanded(
                                                   child: InkWell(
-                                                    onTap: () => setState(() => role = "Learner"),
-                                                    borderRadius: BorderRadius.circular(14),
-                                                    child: Center(
-                                                      child: AnimatedDefaultTextStyle(
-                                                        duration: const Duration(milliseconds: 200),
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          color: isStudent ? AppColors.primary : Colors.grey.shade700,
+                                                    onTap: () => setState(
+                                                      () => role = "Learner",
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14,
                                                         ),
-                                                        child: const Text("Student"),
-                                                      ),
+                                                    child: Center(
+                                                      child:
+                                                          AnimatedDefaultTextStyle(
+                                                            duration:
+                                                                const Duration(
+                                                                  milliseconds:
+                                                                      200,
+                                                                ),
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: isStudent
+                                                                  ? AppColors
+                                                                        .primary
+                                                                  : Colors
+                                                                        .grey
+                                                                        .shade700,
+                                                            ),
+                                                            child: const Text(
+                                                              "Student",
+                                                            ),
+                                                          ),
                                                     ),
                                                   ),
                                                 ),
                                                 Expanded(
                                                   child: InkWell(
-                                                    onTap: () => setState(() => role = "Admin"),
-                                                    borderRadius: BorderRadius.circular(14),
-                                                    child: Center(
-                                                      child: AnimatedDefaultTextStyle(
-                                                        duration: const Duration(milliseconds: 200),
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          color: !isStudent ? AppColors.primary : Colors.grey.shade700,
+                                                    onTap: () => setState(
+                                                      () => role = "Admin",
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14,
                                                         ),
-                                                        child: const Text("Admin"),
-                                                      ),
+                                                    child: Center(
+                                                      child:
+                                                          AnimatedDefaultTextStyle(
+                                                            duration:
+                                                                const Duration(
+                                                                  milliseconds:
+                                                                      200,
+                                                                ),
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: !isStudent
+                                                                  ? AppColors
+                                                                        .primary
+                                                                  : Colors
+                                                                        .grey
+                                                                        .shade700,
+                                                            ),
+                                                            child: const Text(
+                                                              "Admin",
+                                                            ),
+                                                          ),
                                                     ),
                                                   ),
                                                 ),
@@ -153,18 +220,46 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
 
                                   const SizedBox(height: 18),
-                                  GlassTextField(
-                                    controller: emailController,
-                                    hint: "Email",
-                                    prefixIcon: Icons.email_outlined,
-                                    keyboardType: TextInputType.emailAddress,
-                                  ),
-                                  const SizedBox(height: 18),
-                                  GlassTextField(
-                                    controller: passwordController,
-                                    hint: "Password",
-                                    prefixIcon: Icons.lock_outline,
-                                    isPassword: true,
+                                  Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: [
+                                        GlassTextField(
+                                          controller: emailController,
+                                          hint: "Email",
+                                          prefixIcon: Icons.email_outlined,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return 'Email is required';
+                                            }
+                                            if (!value.contains('@')) {
+                                              return 'Enter a valid email';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        const SizedBox(height: 18),
+                                        GlassTextField(
+                                          controller: passwordController,
+                                          hint: "Password",
+                                          prefixIcon: Icons.lock_outline,
+                                          isPassword: true,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return 'Password is required';
+                                            }
+                                            if (value.trim().length < 6) {
+                                              return 'Use at least 6 characters';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
                                   Align(
@@ -178,12 +273,17 @@ class _LoginPageState extends State<LoginPage> {
                                   GradientButton(
                                     text: "Login",
                                     onPressed: () {
-                                      // Passes the current selected role forward into the navigation context stack
+                                      if (!_formKey.currentState!.validate()) {
+                                        return;
+                                      }
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => const MainNavigationPage(),
-                                          settings: RouteSettings(arguments: role),
+                                          builder: (_) =>
+                                              const MainNavigationPage(),
+                                          settings: RouteSettings(
+                                            arguments: role,
+                                          ),
                                         ),
                                       );
                                     },
@@ -193,7 +293,9 @@ class _LoginPageState extends State<LoginPage> {
                                     children: const [
                                       Expanded(child: Divider()),
                                       Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 12),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
                                         child: Text("OR"),
                                       ),
                                       Expanded(child: Divider()),

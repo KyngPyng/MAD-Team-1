@@ -26,4 +26,21 @@ class ProgramModel {
     this.modules = const [],
     this.isEnrolled = false,
   });
+
+  factory ProgramModel.fromJson(Map<String, dynamic> json) {
+    return ProgramModel(
+      title: json['title'] as String,
+      category: json['category'] as String,
+      level: json['level'] as String,
+      duration: json['duration'] as String,
+      rating: (json['rating'] as num).toDouble(),
+      students: (json['students'] as num).toInt(),
+      progress: (json['progress'] as num).toDouble(),
+      image: json['image'] as String,
+      mentor: (json['mentor'] as String?) ?? 'TeamSync Mentor',
+      description: (json['description'] as String?) ?? '',
+      modules: (json['modules'] as List<dynamic>? ?? const []).cast<String>(),
+      isEnrolled: (json['isEnrolled'] as bool?) ?? false,
+    );
+  }
 }

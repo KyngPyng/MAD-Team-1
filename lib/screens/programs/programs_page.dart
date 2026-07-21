@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../data/program_dummy_data.dart';
+import '../../data/mock_data_repository.dart';
+import '../../models/program_model.dart';
 import '../../widgets/category_chip.dart';
 import '../../widgets/program_card.dart';
 import 'program_details_page.dart';
@@ -42,6 +43,8 @@ class _ProgramsPageState extends State<ProgramsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final programs = MockDataRepository.instance.programs;
+    final loadError = MockDataRepository.instance.loadError;
     final filteredPrograms = programs.where((program) {
       final matchesCategory =
           selectedCategory == 0 ||
@@ -54,8 +57,12 @@ class _ProgramsPageState extends State<ProgramsPage> {
       return matchesCategory && matchesQuery;
     }).toList();
 
-    final enrolledPrograms = filteredPrograms.where((p) => p.isEnrolled).toList();
-    final discoverPrograms = filteredPrograms.where((p) => !p.isEnrolled).toList();
+    final enrolledPrograms = filteredPrograms
+        .where((p) => p.isEnrolled)
+        .toList();
+    final discoverPrograms = filteredPrograms
+        .where((p) => !p.isEnrolled)
+        .toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -78,12 +85,21 @@ class _ProgramsPageState extends State<ProgramsPage> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 10, 24, 30),
           children: [
+            if (loadError != null) ...[
+              MaterialBanner(
+                backgroundColor: Colors.red.withValues(alpha: 0.08),
+                content: Text(loadError),
+                actions: [
+                  TextButton(onPressed: () {}, child: const Text('OK')),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
             Text(
               "Find Your Next Program",
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             Text(
@@ -102,7 +118,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
                       IconButton(
                         icon: const Icon(Icons.clear_rounded),
                         onPressed: _clearFilters,
-                      )
+                      ),
                     ]
                   : null,
               elevation: const WidgetStatePropertyAll(0),
@@ -149,15 +165,18 @@ class _ProgramsPageState extends State<ProgramsPage> {
                     Text(
                       "No Results Found",
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade800,
-                          ),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade800,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       "We couldn't find matches for '$query'.\nTry checking your spelling or changing filters.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey.shade600, height: 1.4),
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        height: 1.4,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     TextButton.icon(
@@ -165,7 +184,10 @@ class _ProgramsPageState extends State<ProgramsPage> {
                       icon: const Icon(Icons.refresh_rounded),
                       label: const Text("Reset Search Filters"),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
@@ -179,10 +201,9 @@ class _ProgramsPageState extends State<ProgramsPage> {
               if (enrolledPrograms.isNotEmpty) ...[
                 Text(
                   "My Enrolled Programs",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
@@ -210,10 +231,9 @@ class _ProgramsPageState extends State<ProgramsPage> {
               if (discoverPrograms.isNotEmpty) ...[
                 Text(
                   "Discover Programs",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 14),
                 ListView.separated(
@@ -237,12 +257,10 @@ class _ProgramsPageState extends State<ProgramsPage> {
     );
   }
 
-  void _navigateToDetails(BuildContext context, dynamic program) {
+  void _navigateToDetails(BuildContext context, ProgramModel program) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ProgramDetailsPage(program: program),
-      ),
+      MaterialPageRoute(builder: (_) => ProgramDetailsPage(program: program)),
     );
   }
 }

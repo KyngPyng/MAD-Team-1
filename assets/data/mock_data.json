@@ -1,0 +1,98 @@
+{
+  "programs": [
+    {
+      "title": "Flutter Development",
+      "category": "Flutter",
+      "level": "Beginner",
+      "duration": "8 Weeks",
+      "rating": 4.8,
+      "students": 1200,
+      "progress": 0.7,
+      "image": "assets/images/flutter.png",
+      "mentor": "Priya Shah",
+      "description": "Build polished, production-ready Flutter apps from responsive UI to release.",
+      "modules": [
+        "Flutter foundations",
+        "State and navigation",
+        "Production UI"
+      ],
+      "isEnrolled": true
+    },
+    {
+      "title": "UI/UX Design",
+      "category": "Design",
+      "level": "Intermediate",
+      "duration": "6 Weeks",
+      "rating": 4.7,
+      "students": 860,
+      "progress": 0.35,
+      "image": "assets/images/uiux.png",
+      "mentor": "Daniel Kim",
+      "description": "Learn a practical user-centred design process and turn research into useful interfaces.",
+      "modules": [
+        "Design research",
+        "Wireframing",
+        "Prototyping and handoff"
+      ],
+      "isEnrolled": true
+    },
+    {
+      "title": "Artificial Intelligence",
+      "category": "AI",
+      "level": "Advanced",
+      "duration": "10 Weeks",
+      "rating": 4.9,
+      "students": 2100,
+      "progress": 0,
+      "image": "assets/images/ai.png",
+      "mentor": "Amina Yusuf",
+      "description": "Explore core artificial intelligence concepts, model development, and responsible deployment.",
+      "modules": [
+        "AI foundations",
+        "Machine learning workflows",
+        "Responsible AI"
+      ],
+      "isEnrolled": false
+    }
+  ],
+  "projects": [
+    {
+      "title": "E-commerce App",
+      "description": "Develop features, landing page and improve payment gateway.",
+      "image": "assets/images/project1.png",
+      "status": "In Progress",
+      "progress": 0.65,
+      "teamMembers": ["AM", "JK", "SL"],
+      "dueDate": "Jun 20",
+      "tasks": [
+        {"title": "Finish UI wireframes for module", "dueDate": "Today", "completed": false},
+        {"title": "Review checkout implementation", "dueDate": "Tomorrow", "completed": false}
+      ]
+    },
+    {
+      "title": "Nexus Mobile App",
+      "description": "Set up global state management, design scalable UI components, and integrate foundational app features.",
+      "image": "assets/images/project2.png",
+      "status": "In Progress",
+      "progress": 0.35,
+      "teamMembers": ["AM", "RK", "TJ", "OS"],
+      "dueDate": "Jul 15",
+      "tasks": [
+        {"title": "Initialize repository layout and basic routing", "dueDate": "Today", "completed": false},
+        {"title": "Review initial sprint layout with sub team", "dueDate": "Tomorrow", "completed": false}
+      ]
+    },
+    {
+      "title": "Fitness Tracker",
+      "description": "Implement chart logs for daily calorie tracking.",
+      "image": "assets/images/project3.png",
+      "status": "Completed",
+      "progress": 1,
+      "teamMembers": ["AM", "CD"],
+      "dueDate": "Jul 2",
+      "tasks": [
+        {"title": "Plan calorie tracking milestones", "dueDate": "Jun 28", "completed": true}
+      ]
+    }
+  ]
+}

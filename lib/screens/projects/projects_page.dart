@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/dummy_data.dart';
+import '../../data/mock_data_repository.dart';
 import '../../models/project_model.dart';
 import '../../widgets/project_card.dart';
 import 'project_details_page.dart';
@@ -10,6 +10,7 @@ class ProjectsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final projects = MockDataRepository.instance.projects;
     final activeProjects = projects.where((project) => project.progress < 1);
     final completedProjects = projects.where(
       (project) => project.progress >= 1,
