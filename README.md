@@ -183,5 +183,26 @@ lib/
 | Responsive UI | ✅ Complete |
 
 ---
-
 This repository represents the Week 2 deliverable for the **Excelerate Mobile App Development with Flutter Virtual Internship**, demonstrating the transition from low-fidelity wireframes to a functional Flutter UI prototype.
+
+
+# Week 3 Progress
+
+## JSON-Backed Data
+
+- Program listing and program details now load from `assets/data/mock_data.json`.
+- Home, projects, team dashboard, and navigation screens use the same shared mock repository.
+- Dummy Dart data files were removed to keep the data layer in one place.
+
+## Working Form
+
+- A feedback form was added to the profile screen.
+- The form validates name, email, and feedback text before submission.
+- Successful submission shows a snackbar and returns to the previous screen.
+
+## Loading and Error Handling
+
+- Mock data is loaded at app startup.
+- If the JSON asset cannot be loaded, the app falls back to empty states instead of crashing.
+
+---
