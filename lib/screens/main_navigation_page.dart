@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/mock_data_repository.dart';
 import '../widgets/floating_bottom_nav.dart';
 import 'home/home_page.dart';
+import 'profile_screen.dart';
 import 'programs/programs_page.dart';
 import 'projects/projects_page.dart';
 import 'teams/team_dashboard_page.dart';
@@ -26,7 +27,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       const HomePage(),
       const ProgramsPage(),
       const ProjectsPage(),
-      TeamDashboardPage(program: MockDataRepository.instance.programs.first),
+      const ProfileScreen(),
     ];
 
     return PopScope(
