@@ -1,4 +1,5 @@
 class ProgramModel {
+  final String id; // Added to differentiate programs cleanly
   final String title;
   final String category;
   final String level;
@@ -13,6 +14,7 @@ class ProgramModel {
   final bool isEnrolled;
 
   const ProgramModel({
+    required this.id,
     required this.title,
     required this.category,
     required this.level,
@@ -27,19 +29,23 @@ class ProgramModel {
     this.isEnrolled = false,
   });
 
+  // Factory constructor to safely parse JSON data
   factory ProgramModel.fromJson(Map<String, dynamic> json) {
     return ProgramModel(
-      title: json['title'] as String,
-      category: json['category'] as String,
-      level: json['level'] as String,
-      duration: json['duration'] as String,
-      rating: (json['rating'] as num).toDouble(),
-      students: (json['students'] as num).toInt(),
-      progress: (json['progress'] as num).toDouble(),
-      image: json['image'] as String,
-      mentor: (json['mentor'] as String?) ?? 'TeamSync Mentor',
+      id: (json['id'] as String?) ?? '',
+      title: (json['title'] as String?) ?? '',
+      category: (json['category'] as String?) ?? '',
+      level: (json['level'] as String?) ?? 'Beginner',
+      duration: (json['duration'] as String?) ?? '',
+      rating: ((json['rating'] as num?) ?? 0.0).toDouble(),
+      students: ((json['students'] as num?) ?? 0).toInt(),
+      progress: ((json['progress'] as num?) ?? 0.0).toDouble(),
+      image: (json['imageUrl'] as String?) ?? (json['image'] as String?) ?? '',
+      mentor: (json['instructor'] as String?) ?? (json['mentor'] as String?) ?? 'TeamSync Mentor',
       description: (json['description'] as String?) ?? '',
-      modules: (json['modules'] as List<dynamic>? ?? const []).cast<String>(),
+      modules: (json['topics'] as List<dynamic>? ?? json['modules'] as List<dynamic>? ?? [])
+          .map((e) => e.toString())
+          .toList(),
       isEnrolled: (json['isEnrolled'] as bool?) ?? false,
     );
   }

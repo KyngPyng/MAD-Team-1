@@ -90,7 +90,7 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
-                value: _rating,
+                initialValue: _rating,
                 decoration: const InputDecoration(
                   labelText: 'Rating',
                   border: OutlineInputBorder(),

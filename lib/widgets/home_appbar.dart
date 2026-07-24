@@ -127,9 +127,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: const Color(
-                                      0xFF7B7BFF,
-                                    ).withOpacity(0.15),
+                                    backgroundColor: const Color(0xFF7B7BFF)
+                                        .withValues(alpha: 0.15),
                                     child: const Icon(
                                       Icons.hub_rounded,
                                       color: Color(0xFF7B7BFF),

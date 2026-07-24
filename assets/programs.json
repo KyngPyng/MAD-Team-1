@@ -1,0 +1,44 @@
+{
+  "programs": [
+    {
+      "id": "p1",
+      "title": "Mobile App Development with Flutter",
+      "category": "Software Engineering",
+      "level": "Intermediate",
+      "duration": "4 Weeks",
+      "rating": 4.8,
+      "students": 120,
+      "progress": 0.0,
+      "imageUrl": "https://placeholder.pics/svg/300x200",
+      "instructor": "Alex Mercer",
+      "description": "Learn to build high-performance, cross-platform mobile applications using Flutter and Dart from scratch.",
+      "topics": [
+        "Introduction to Dart & Widgets",
+        "Navigation & Architecture",
+        "State Management & API Integration",
+        "Testing & Deployment"
+      ],
+      "isEnrolled": false
+    },
+    {
+      "id": "p2",
+      "title": "Project Management Associate",
+      "category": "Management",
+      "level": "Beginner",
+      "duration": "4 Weeks",
+      "rating": 4.9,
+      "students": 85,
+      "progress": 0.0,
+      "imageUrl": "https://placeholder.pics/svg/300x200",
+      "instructor": "Sarah Jenkins",
+      "description": "Master project planning, resource allocation, risk management, and team coordination workflows.",
+      "topics": [
+        "Project Lifecycle & Initiating",
+        "Planning & Resource Scheduling",
+        "Execution & Team Coordination",
+        "Closing & Final Documentation"
+      ],
+      "isEnrolled": false
+    }
+  ]
+}
