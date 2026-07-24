@@ -82,38 +82,42 @@ class _ProgramsPageState extends State<ProgramsPage> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_errorMessage != null) {
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
         body: Center(child: Text("Error: $_errorMessage")),
       );
     }
 
     final filteredPrograms = _allPrograms.where((program) {
-      final matchesCategory = selectedCategory == 0 ||
+      final matchesCategory =
+          selectedCategory == 0 ||
           program.category.trim().toLowerCase() ==
               categories[selectedCategory].trim().toLowerCase();
 
       final normalizedQuery = query.toLowerCase();
-      final matchesQuery = normalizedQuery.isEmpty ||
+      final matchesQuery =
+          normalizedQuery.isEmpty ||
           program.title.toLowerCase().contains(normalizedQuery) ||
           program.category.toLowerCase().contains(normalizedQuery);
 
       return matchesCategory && matchesQuery;
     }).toList();
 
-    final enrolledPrograms =
-        filteredPrograms.where((p) => p.isEnrolled).toList();
-    final discoverPrograms =
-        filteredPrograms.where((p) => !p.isEnrolled).toList();
+    final enrolledPrograms = filteredPrograms
+        .where((p) => p.isEnrolled)
+        .toList();
+    final discoverPrograms = filteredPrograms
+        .where((p) => !p.isEnrolled)
+        .toList();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

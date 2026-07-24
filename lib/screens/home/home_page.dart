@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
         .length;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),

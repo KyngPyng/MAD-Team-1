@@ -104,6 +104,8 @@ class _LoginPageState extends State<LoginPage> {
                 final topPadding = isCompact ? 8.0 : 20.0;
                 final cardPadding = isCompact ? 16.0 : 24.0;
                 final cardMaxWidth = isCompact ? 400.0 : 420.0;
+                final cardMaxHeight =
+                    constraints.maxHeight - (topPadding * 2) - 16;
                 final logoSize = isCompact ? 82.0 : 110.0;
                 final logoPadding = isCompact
                     ? const EdgeInsets.all(14)
@@ -125,13 +127,15 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: cardMaxWidth),
+                      constraints: BoxConstraints(
+                        maxWidth: cardMaxWidth,
+                        maxHeight: cardMaxHeight,
+                      ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(32),
                         child: BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                           child: Container(
-                            padding: EdgeInsets.all(cardPadding),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: .58),
                               borderRadius: BorderRadius.circular(32),
@@ -148,230 +152,249 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ],
                             ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                LogoCard(size: logoSize, padding: logoPadding),
-                                SizedBox(height: titleGap),
-                                Text(
-                                  "Welcome Back",
-                                  style: AppTextStyles.heading.copyWith(
-                                    fontSize: headingSize,
+                            child: SingleChildScrollView(
+                              padding: EdgeInsets.all(cardPadding),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  LogoCard(
+                                    size: logoSize,
+                                    padding: logoPadding,
                                   ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  "Sign in to continue",
-                                  style: AppTextStyles.subtitle.copyWith(
-                                    fontSize: subtitleSize,
+                                  SizedBox(height: titleGap),
+                                  Text(
+                                    "Welcome Back",
+                                    style: AppTextStyles.heading.copyWith(
+                                      fontSize: headingSize,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: sectionGap),
-                                LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    final width = constraints.maxWidth;
-                                    final isStudent = role == "Learner";
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    "Sign in to continue",
+                                    style: AppTextStyles.subtitle.copyWith(
+                                      fontSize: subtitleSize,
+                                    ),
+                                  ),
+                                  SizedBox(height: sectionGap),
+                                  LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final width = constraints.maxWidth;
+                                      final isStudent = role == "Learner";
 
-                                    return Container(
-                                      height: roleHeight,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.05,
+                                      return Container(
+                                        height: roleHeight,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.05,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
                                         ),
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          AnimatedPositioned(
-                                            duration: const Duration(
-                                              milliseconds: 250,
-                                            ),
-                                            curve: Curves.easeInOutCubic,
-                                            left: isStudent ? 4 : (width / 2),
-                                            top: 4,
-                                            bottom: 4,
-                                            width: (width / 2) - 4,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black
-                                                        .withValues(
-                                                          alpha: 0.08,
-                                                        ),
-                                                    blurRadius: 4,
-                                                    offset: const Offset(0, 2),
-                                                  ),
-                                                ],
+                                        child: Stack(
+                                          children: [
+                                            AnimatedPositioned(
+                                              duration: const Duration(
+                                                milliseconds: 250,
                                               ),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () => setState(
-                                                    () => role = "Learner",
-                                                  ),
+                                              curve: Curves.easeInOutCubic,
+                                              left: isStudent ? 4 : (width / 2),
+                                              top: 4,
+                                              bottom: 4,
+                                              width: (width / 2) - 4,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
                                                   borderRadius:
-                                                      BorderRadius.circular(14),
-                                                  child: Center(
-                                                    child:
-                                                        AnimatedDefaultTextStyle(
-                                                          duration:
-                                                              const Duration(
-                                                                milliseconds:
-                                                                    200,
-                                                              ),
-                                                          style: TextStyle(
-                                                            fontSize: isCompact
-                                                                ? 13
-                                                                : 14,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: isStudent
-                                                                ? AppColors
-                                                                      .primary
-                                                                : Colors
-                                                                      .grey
-                                                                      .shade700,
+                                                      BorderRadius.circular(10),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withValues(
+                                                            alpha: 0.08,
                                                           ),
-                                                          child: const Text(
-                                                            "Student",
-                                                          ),
-                                                        ),
-                                                  ),
+                                                      blurRadius: 4,
+                                                      offset: const Offset(
+                                                        0,
+                                                        2,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () => setState(
-                                                    () => role = "Admin",
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(14),
-                                                  child: Center(
-                                                    child:
-                                                        AnimatedDefaultTextStyle(
-                                                          duration:
-                                                              const Duration(
-                                                                milliseconds:
-                                                                    200,
-                                                              ),
-                                                          style: TextStyle(
-                                                            fontSize: isCompact
-                                                                ? 13
-                                                                : 14,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: !isStudent
-                                                                ? AppColors
-                                                                      .primary
-                                                                : Colors
-                                                                      .grey
-                                                                      .shade700,
-                                                          ),
-                                                          child: const Text(
-                                                            "Admin",
-                                                          ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: InkWell(
+                                                    onTap: () => setState(
+                                                      () => role = "Learner",
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14,
                                                         ),
+                                                    child: Center(
+                                                      child:
+                                                          AnimatedDefaultTextStyle(
+                                                            duration:
+                                                                const Duration(
+                                                                  milliseconds:
+                                                                      200,
+                                                                ),
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  isCompact
+                                                                  ? 13
+                                                                  : 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: isStudent
+                                                                  ? AppColors
+                                                                        .primary
+                                                                  : Colors
+                                                                        .grey
+                                                                        .shade700,
+                                                            ),
+                                                            child: const Text(
+                                                              "Student",
+                                                            ),
+                                                          ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                Expanded(
+                                                  child: InkWell(
+                                                    onTap: () => setState(
+                                                      () => role = "Admin",
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14,
+                                                        ),
+                                                    child: Center(
+                                                      child:
+                                                          AnimatedDefaultTextStyle(
+                                                            duration:
+                                                                const Duration(
+                                                                  milliseconds:
+                                                                      200,
+                                                                ),
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  isCompact
+                                                                  ? 13
+                                                                  : 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: !isStudent
+                                                                  ? AppColors
+                                                                        .primary
+                                                                  : Colors
+                                                                        .grey
+                                                                        .shade700,
+                                                            ),
+                                                            child: const Text(
+                                                              "Admin",
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: fieldGap),
+                                  Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: [
+                                        GlassTextField(
+                                          controller: emailController,
+                                          hint: "Email",
+                                          prefixIcon: Icons.email_outlined,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return 'Email is required';
+                                            }
+                                            if (!value.contains('@')) {
+                                              return 'Enter a valid email';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        SizedBox(height: fieldGap),
+                                        GlassTextField(
+                                          controller: passwordController,
+                                          hint: "Password",
+                                          prefixIcon: Icons.lock_outline,
+                                          isPassword: true,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return 'Password is required';
+                                            }
+                                            if (value.trim().length < 6) {
+                                              return 'Use at least 6 characters';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed: () {},
+                                      child: const Text("Forgot Password?"),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  GradientButton(
+                                    text: "Login",
+                                    onPressed: _login,
+                                  ),
+                                  SizedBox(height: actionGap),
+                                  Row(
+                                    children: const [
+                                      Expanded(child: Divider()),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        child: Text("OR"),
                                       ),
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: fieldGap),
-                                Form(
-                                  key: _formKey,
-                                  child: Column(
+                                      Expanded(child: Divider()),
+                                    ],
+                                  ),
+                                  SizedBox(height: actionGap),
+                                  GoogleButton(onPressed: () {}),
+                                  SizedBox(height: actionGap),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      GlassTextField(
-                                        controller: emailController,
-                                        hint: "Email",
-                                        prefixIcon: Icons.email_outlined,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        validator: (value) {
-                                          if (value == null ||
-                                              value.trim().isEmpty) {
-                                            return 'Email is required';
-                                          }
-                                          if (!value.contains('@')) {
-                                            return 'Enter a valid email';
-                                          }
-                                          return null;
-                                        },
+                                      const Flexible(
+                                        child: Text("Don't have an account? "),
                                       ),
-                                      SizedBox(height: fieldGap),
-                                      GlassTextField(
-                                        controller: passwordController,
-                                        hint: "Password",
-                                        prefixIcon: Icons.lock_outline,
-                                        isPassword: true,
-                                        validator: (value) {
-                                          if (value == null ||
-                                              value.trim().isEmpty) {
-                                            return 'Password is required';
-                                          }
-                                          if (value.trim().length < 6) {
-                                            return 'Use at least 6 characters';
-                                          }
-                                          return null;
-                                        },
+                                      TextButton(
+                                        onPressed: _openRegistration,
+                                        child: const Text("Sign Up"),
                                       ),
                                     ],
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: const Text("Forgot Password?"),
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                GradientButton(
-                                  text: "Login",
-                                  onPressed: _login,
-                                ),
-                                SizedBox(height: actionGap),
-                                Row(
-                                  children: const [
-                                    Expanded(child: Divider()),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                      ),
-                                      child: Text("OR"),
-                                    ),
-                                    Expanded(child: Divider()),
-                                  ],
-                                ),
-                                SizedBox(height: actionGap),
-                                GoogleButton(onPressed: () {}),
-                                SizedBox(height: actionGap),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Flexible(
-                                      child: Text("Don't have an account? "),
-                                    ),
-                                    TextButton(
-                                      onPressed: _openRegistration,
-                                      child: const Text("Sign Up"),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),

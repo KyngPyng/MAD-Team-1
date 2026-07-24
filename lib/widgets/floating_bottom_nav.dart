@@ -1,6 +1,5 @@
 import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
-import '../core/constants/app_colors.dart';
 
 class FloatingBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -16,7 +15,6 @@ class FloatingBottomNav extends StatelessWidget {
     (Icons.home_rounded, "Home"),
     (Icons.menu_book_rounded, "Programs"),
     (Icons.folder_rounded, "Projects"),
-    (Icons.person_outline_rounded, "Profile"),
   ];
 
   @override
@@ -28,8 +26,7 @@ class FloatingBottomNav extends StatelessWidget {
           height: 82,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final totalWidth = constraints.maxWidth;
-              final itemWidth = totalWidth / _items.length;
+              final itemWidth = constraints.maxWidth / _items.length;
 
               return Stack(
                 clipBehavior: Clip.none,
@@ -37,25 +34,47 @@ class FloatingBottomNav extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(34),
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                      filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
                       child: Container(
                         height: 82,
                         decoration: BoxDecoration(
-                          color: const Color(
-                            0xFF1E1E1E,
-                          ).withValues(alpha: 0.84),
+                          color: Colors.white.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(34),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.08),
+                            color: Colors.white.withValues(alpha: 0.14),
                             width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.24),
-                              blurRadius: 30,
-                              offset: const Offset(0, 14),
+                              color: Colors.black.withValues(alpha: 0.12),
+                              blurRadius: 24,
+                              offset: const Offset(0, 10),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 260),
+                    curve: Curves.easeOutCubic,
+                    left: currentIndex * itemWidth + 8,
+                    top: 8,
+                    bottom: 8,
+                    width: itemWidth - 16,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(26),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.14),
+                            borderRadius: BorderRadius.circular(26),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.22),
+                              width: 1,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -98,43 +117,6 @@ class FloatingBottomNav extends StatelessWidget {
                         ),
                       );
                     }),
-                  ),
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOutCubic,
-                    left: currentIndex * itemWidth + 8,
-                    top: 8,
-                    bottom: 8,
-                    width: itemWidth - 16,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: const Color(
-                              0xFF2D4B78,
-                            ).withValues(alpha: 0.38),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: const Color(
-                                0xFF7FB3FF,
-                              ).withValues(alpha: 0.32),
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(
-                                  0xFF0B1320,
-                                ).withValues(alpha: 0.22),
-                                blurRadius: 18,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               );

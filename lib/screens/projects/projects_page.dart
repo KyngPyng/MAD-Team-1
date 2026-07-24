@@ -17,6 +17,7 @@ class ProjectsPage extends StatelessWidget {
     );
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(title: const Text('Projects')),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
