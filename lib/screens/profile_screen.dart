@@ -1,178 +1,205 @@
 import 'package:flutter/material.dart';
-import '../screens/login/login_page.dart'; // Make sure this path correctly points to your LoginPage file
+
+import '../data/app_session_service.dart';
+import '../data/local_auth_service.dart';
+import '../screens/login/login_page.dart';
 import 'feedback/feedback_form_page.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late final Future<SavedCredentials?> _accountFuture = AppSessionService
+      .instance
+      .resolveCurrentUser();
+
+  @override
   Widget build(BuildContext context) {
-    final String userRole =
-        (ModalRoute.of(context)?.settings.arguments as String?) ?? 'Learner';
-    final bool isAdmin = userRole == 'Admin';
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          isAdmin ? 'Admin Management Profile' : 'teamSync - My Profile',
-        ),
-        backgroundColor: Colors.deepPurple.shade50,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 16),
-
-            // Dynamic Profile Image Container
-            CircleAvatar(
-              radius: 60,
-              backgroundColor: isAdmin
-                  ? Colors.indigo.shade100
-                  : Colors.deepPurple.shade100,
-              child: Icon(
-                isAdmin ? Icons.admin_panel_settings : Icons.person,
-                size: 80,
-                color: isAdmin ? Colors.indigo : Colors.deepPurple,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Custom Metadata display blocks
-            Text(
-              isAdmin ? 'Director Operations Office' : 'Alex Mensah',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              isAdmin
+    return FutureBuilder<SavedCredentials?>(
+      future: _accountFuture,
+      builder: (context, snapshot) {
+        final account = snapshot.data;
+        final String userRole =
+            account?.role ??
+            (ModalRoute.of(context)?.settings.arguments as String?) ??
+            'Learner';
+        final bool isAdmin = userRole == 'Admin';
+        final String displayName = account?.name.isNotEmpty == true
+            ? account!.name
+            : (isAdmin ? 'Director Operations Office' : 'Alex Mensah');
+        final String email = account?.email.isNotEmpty == true
+            ? account!.email
+            : (isAdmin
+                  ? 'admin@teamsync.local'
+                  : 'alex.mensah@excelerate-learner.com');
+        final String subtitle = account?.role != null
+            ? '${account!.role} • ${isAdmin ? 'System Administrator Tier 1' : 'Excelerate Cohort 4'}'
+            : (isAdmin
                   ? 'System Administrator Tier 1'
-                  : 'Learner (Team Lead) • Excelerate Cohort 4',
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  : 'Learner (Team Lead) • Excelerate Cohort 4');
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              isAdmin ? 'Admin Management Profile' : 'teamSync - My Profile',
             ),
-            const SizedBox(height: 32),
-
-            // Metric UI updates conditionally based on dynamic permission level
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: isAdmin
-                  ? [
-                      _buildMetricCard(
-                        context,
-                        'Global',
-                        'Scope Access',
-                        Colors.indigo,
-                      ),
-                      _buildMetricCard(
-                        context,
-                        'Level 4',
-                        'Security Clearance',
-                        Colors.indigo,
-                      ),
-                    ]
-                  : [
-                      _buildMetricCard(
-                        context,
-                        '12/15',
-                        'Tasks Done',
-                        Colors.deepPurple,
-                      ),
-                      _buildMetricCard(
-                        context,
-                        '95%',
-                        'Attendance',
-                        Colors.deepPurple,
-                      ),
-                    ],
-            ),
-            const SizedBox(height: 32),
-            const Divider(),
-            const SizedBox(height: 16),
-
-            // Action lists specific to structural capabilities
-            if (isAdmin) ...[
-              _buildSettingsTile(
-                context,
-                icon: Icons.security,
-                title: 'Encryption & Audit Logs',
-                subtitle: 'Review secure transaction history logs.',
-                color: Colors.indigo,
-              ),
-              _buildSettingsTile(
-                context,
-                icon: Icons.supervised_user_circle,
-                title: 'User Privilege Panel',
-                subtitle: 'Manage active system allocations.',
-                color: Colors.indigo,
-              ),
-              _buildSettingsTile(
-                context,
-                icon: Icons.feedback_outlined,
-                title: 'Send Feedback',
-                subtitle: 'Tell us what could be better.',
-                color: Colors.indigo,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const FeedbackFormPage()),
-                ),
-              ),
-            ] else ...[
-              _buildSettingsTile(
-                context,
-                icon: Icons.email,
-                title: 'Email Address',
-                subtitle: 'alex.mensah@excelerate-learner.com',
-                color: Colors.deepPurple,
-              ),
-              _buildSettingsTile(
-                context,
-                icon: Icons.notifications,
-                title: 'Slack Sync Alerts',
-                subtitle: 'Enabled (15 mins prior to Daily Sync)',
-                color: Colors.deepPurple,
-              ),
-              _buildSettingsTile(
-                context,
-                icon: Icons.feedback_outlined,
-                title: 'Send Feedback',
-                subtitle: 'Share your thoughts with the team.',
-                color: Colors.deepPurple,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const FeedbackFormPage()),
-                ),
-              ),
-            ],
-            const SizedBox(height: 40),
-
-            // Clear authentication navigation action hook
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: const BorderSide(color: Colors.red),
-                  foregroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+            backgroundColor: Colors.deepPurple.shade50,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 16),
+                CircleAvatar(
+                  radius: 60,
+                  backgroundColor: isAdmin
+                      ? Colors.indigo.shade100
+                      : Colors.deepPurple.shade100,
+                  child: Icon(
+                    isAdmin ? Icons.admin_panel_settings : Icons.person,
+                    size: 80,
+                    color: isAdmin ? Colors.indigo : Colors.deepPurple,
                   ),
                 ),
-                onPressed: () {
-                  // UPDATED: Destroys the entire layout stack from the root context shell
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                    (route) => false,
-                  );
-                },
-                icon: const Icon(Icons.logout),
-                label: const Text(
-                  'Log Out',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                const SizedBox(height: 16),
+                Text(
+                  displayName,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  email,
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: isAdmin
+                      ? [
+                          _buildMetricCard(
+                            context,
+                            'Global',
+                            'Scope Access',
+                            Colors.indigo,
+                          ),
+                          _buildMetricCard(
+                            context,
+                            'Level 4',
+                            'Security Clearance',
+                            Colors.indigo,
+                          ),
+                        ]
+                      : [
+                          _buildMetricCard(
+                            context,
+                            '12/15',
+                            'Tasks Done',
+                            Colors.deepPurple,
+                          ),
+                          _buildMetricCard(
+                            context,
+                            '95%',
+                            'Attendance',
+                            Colors.deepPurple,
+                          ),
+                        ],
+                ),
+                const SizedBox(height: 32),
+                const Divider(),
+                const SizedBox(height: 16),
+                if (isAdmin) ...[
+                  _buildSettingsTile(
+                    context,
+                    icon: Icons.security,
+                    title: 'Encryption & Audit Logs',
+                    subtitle: 'Review secure transaction history logs.',
+                    color: Colors.indigo,
+                  ),
+                  _buildSettingsTile(
+                    context,
+                    icon: Icons.supervised_user_circle,
+                    title: 'User Privilege Panel',
+                    subtitle: 'Manage active system allocations.',
+                    color: Colors.indigo,
+                  ),
+                ] else ...[
+                  _buildSettingsTile(
+                    context,
+                    icon: Icons.email,
+                    title: 'Email Address',
+                    subtitle: email,
+                    color: Colors.deepPurple,
+                  ),
+                  _buildSettingsTile(
+                    context,
+                    icon: Icons.notifications,
+                    title: 'Slack Sync Alerts',
+                    subtitle: 'Enabled (15 mins prior to Daily Sync)',
+                    color: Colors.deepPurple,
+                  ),
+                ],
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.feedback_outlined,
+                  title: 'Send Feedback',
+                  subtitle: 'Share your thoughts with the team.',
+                  color: isAdmin ? Colors.indigo : Colors.deepPurple,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const FeedbackFormPage()),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      side: const BorderSide(color: Colors.red),
+                      foregroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      AppSessionService.instance.clear();
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text(
+                      'Log Out',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

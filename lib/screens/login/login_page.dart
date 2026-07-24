@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/text_styles.dart';
+import '../../data/app_session_service.dart';
+import '../../data/local_auth_service.dart';
 import '../../widgets/glass_textfield.dart';
+import '../register/register_page.dart';
 import '../main_navigation_page.dart';
 import '../../widgets/google_button.dart';
 import '../../widgets/gradient_button.dart';
@@ -24,13 +27,63 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   // Roles match the dynamic string checks in ProfileScreen ('Learner' / 'Admin')
-  String role = "Learner"; 
+  String role = "Learner";
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final session = await LocalAuthService.instance.authenticate(
+      email: emailController.text.trim(),
+      password: passwordController.text,
+      fallbackRole: role,
+    );
+
+    if (!mounted) return;
+
+    if (session == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No matching account found. Register first or use the demo login.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    AppSessionService.instance.setCurrentUser(session);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const MainNavigationPage(),
+        settings: RouteSettings(arguments: session.role),
+      ),
+    );
+  }
+
+  Future<void> _openRegistration() async {
+    final result = await Navigator.of(
+      context,
+    ).push<String>(MaterialPageRoute(builder: (_) => const RegistrationPage()));
+
+    if (!mounted) return;
+
+    if (result != null && result.isNotEmpty) {
+      emailController.text = result;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Account saved. Sign in now.')),
+      );
+    }
   }
 
   @override
@@ -272,21 +325,7 @@ class _LoginPageState extends State<LoginPage> {
                                   const SizedBox(height: 8),
                                   GradientButton(
                                     text: "Login",
-                                    onPressed: () {
-                                      if (!_formKey.currentState!.validate()) {
-                                        return;
-                                      }
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const MainNavigationPage(),
-                                          settings: RouteSettings(
-                                            arguments: role,
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                    onPressed: _login,
                                   ),
                                   const SizedBox(height: 26),
                                   Row(
@@ -311,7 +350,7 @@ class _LoginPageState extends State<LoginPage> {
                                         child: Text("Don't have an account? "),
                                       ),
                                       TextButton(
-                                        onPressed: () {},
+                                        onPressed: _openRegistration,
                                         child: const Text("Sign Up"),
                                       ),
                                     ],

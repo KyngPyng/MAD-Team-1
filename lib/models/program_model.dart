@@ -8,8 +8,8 @@ class ProgramModel {
   final int students;
   final double progress;
   final String image;
-  final String mentor; // Keep the field name your app expects
-  final List<String> modules; // Keep the field name your app expects
+  final String mentor;
+  final List<String> modules;
   final bool isEnrolled;
   final String description;
 
@@ -30,8 +30,11 @@ class ProgramModel {
   });
 
   factory ProgramModel.fromJson(Map<String, dynamic> json) {
+    final modulesJson = json['topics'] ?? json['modules'] ?? const [];
+    final rawImage = json['imageUrl'] ?? json['image'] ?? '';
+    final rawMentor = json['instructor'] ?? json['mentor'] ?? 'TeamSync Mentor';
+
     return ProgramModel(
-<<<<<<< HEAD
       id: (json['id'] as String?) ?? '',
       title: (json['title'] as String?) ?? '',
       category: (json['category'] as String?) ?? '',
@@ -40,30 +43,13 @@ class ProgramModel {
       rating: ((json['rating'] as num?) ?? 0.0).toDouble(),
       students: ((json['students'] as num?) ?? 0).toInt(),
       progress: ((json['progress'] as num?) ?? 0.0).toDouble(),
-      image: (json['imageUrl'] as String?) ?? (json['image'] as String?) ?? '',
-      mentor: (json['instructor'] as String?) ?? (json['mentor'] as String?) ?? 'TeamSync Mentor',
-      description: (json['description'] as String?) ?? '',
-      modules: (json['topics'] as List<dynamic>? ?? json['modules'] as List<dynamic>? ?? [])
-          .map((e) => e.toString())
-          .toList(),
+      image: rawImage.toString(),
+      mentor: rawMentor.toString(),
+      modules: (modulesJson as List<dynamic>)
+          .map((entry) => entry.toString())
+          .toList(growable: false),
       isEnrolled: (json['isEnrolled'] as bool?) ?? false,
-=======
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      category: json['category'] ?? '',
-      level: json['level'] ?? '',
-      duration: json['duration'] ?? '',
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      students: json['students'] as int? ?? 0,
-      progress: (json['progress'] as num?)?.toDouble() ?? 0.0,
-      image: json['imageUrl'] ?? json['image'] ?? '',
-      // Map the JSON 'instructor' key to your app's 'mentor' field
-      mentor: json['instructor'] ?? json['mentor'] ?? '',
-      // Map the JSON 'topics' key to your app's 'modules' field
-      modules: List<String>.from(json['topics'] ?? json['modules'] ?? []),
-      isEnrolled: json['isEnrolled'] as bool? ?? false,
-      description: json['description'] ?? '',
->>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
+      description: (json['description'] as String?) ?? '',
     );
   }
 }

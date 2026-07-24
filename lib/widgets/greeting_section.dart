@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../core/theme/text_styles.dart';
 
 class GreetingSection extends StatelessWidget {
-  const GreetingSection({super.key});
+  final String name;
+
+  const GreetingSection({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class GreetingSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Hello, Aryan 👋",
+          "Hello, $name 👋",
           style: AppTextStyles.heading.copyWith(fontSize: 30),
         ),
 

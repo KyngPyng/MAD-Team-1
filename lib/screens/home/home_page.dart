@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../data/app_session_service.dart';
+import '../../data/local_auth_service.dart';
 import '../../data/mock_data_repository.dart';
 import '../../screens/programs/program_details_page.dart';
-<<<<<<< HEAD
-import '../../screens/projects/project_details_page.dart';
-import '../../screens/teams/team_dashboard_page.dart';
-=======
->>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
 import '../../widgets/greeting_section.dart';
 import '../../widgets/home_appbar.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/task_tile.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final Future<SavedCredentials?> _accountFuture = AppSessionService
+      .instance
+      .resolveCurrentUser();
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +33,13 @@ class HomePage extends StatelessWidget {
         .toList();
     final upcomingTasks = activeProjects
         .expand((project) => project.tasks)
-        .take(3);
-
+        .take(3)
+        .toList();
     final featuredProgram = programs.isNotEmpty ? programs.first : null;
-
     final totalTasksCount = upcomingTasks.length;
-    final int completedTasksCount = 0;
+    final completedTasksCount = upcomingTasks
+        .where((task) => task.completed)
+        .length;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -52,12 +59,20 @@ class HomePage extends StatelessWidget {
             ],
             const HomeAppBar(),
             const SizedBox(height: 30),
-            const GreetingSection(),
+            FutureBuilder<SavedCredentials?>(
+              future: _accountFuture,
+              builder: (context, snapshot) {
+                final account = snapshot.data;
+                return GreetingSection(
+                  name: account?.name.isNotEmpty == true
+                      ? account!.name
+                      : 'Aryan',
+                );
+              },
+            ),
             const SizedBox(height: 28),
             const SearchBarWidget(),
             const SizedBox(height: 35),
-
-            // --- 1. SUMMARY STATS CARD ---
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               decoration: BoxDecoration(
@@ -65,7 +80,7 @@ class HomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -74,24 +89,35 @@ class HomePage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatItem('Programs', '${programs.length}', Icons.school_outlined),
+                  _buildStatItem(
+                    'Programs',
+                    '${programs.length}',
+                    Icons.school_outlined,
+                  ),
                   _buildVerticalDivider(),
-                  _buildStatItem('Active Projects', '${activeProjects.length}', Icons.folder_open_outlined),
+                  _buildStatItem(
+                    'Active Projects',
+                    '${activeProjects.length}',
+                    Icons.folder_open_outlined,
+                  ),
                   _buildVerticalDivider(),
-                  _buildStatItem('Pending Tasks', '${upcomingTasks.length}', Icons.task_alt_outlined),
+                  _buildStatItem(
+                    'Pending Tasks',
+                    '${upcomingTasks.length}',
+                    Icons.task_alt_outlined,
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 35),
-
-            // --- 2. FEATURED PROGRAM BANNER ---
             if (featuredProgram != null) ...[
               const SectionHeader(title: 'Featured Program'),
               const SizedBox(height: 18),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => ProgramDetailsPage(program: featuredProgram),
+                    builder: (_) =>
+                        ProgramDetailsPage(program: featuredProgram),
                   ),
                 ),
                 child: Container(
@@ -101,113 +127,136 @@ class HomePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.25),
+                        color: AppColors.primary.withValues(alpha: 0.25),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                       ),
                     ],
-                    image: DecorationImage(
-                      image: NetworkImage(featuredProgram.image),
-                      fit: BoxFit.cover,
-                    ),
                   ),
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                          Colors.black.withOpacity(0.15),
-                          Colors.black.withOpacity(0.85),
-                        ],
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.5),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.auto_awesome, color: Colors.white, size: 12),
-                                SizedBox(width: 4),
-                                Text(
-                                  'SPOTLIGHT',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.0,
-                                  ),
-                                ),
-                              ],
+                        Image.asset(
+                          featuredProgram.image,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: const Color(0xFF1C2A55),
+                            alignment: Alignment.center,
+                            child: const Icon(
+                              Icons.menu_book_rounded,
+                              color: Colors.white,
+                              size: 52,
                             ),
                           ),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    featuredProgram.title,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.bold,
-                                      height: 1.2,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
+                              colors: [
+                                Colors.black.withValues(alpha: 0.15),
+                                Colors.black.withValues(alpha: 0.85),
+                              ],
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'By ${featuredProgram.mentor}',
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.8),
-                                      fontSize: 12,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.auto_awesome,
+                                        color: Colors.white,
+                                        size: 12,
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'SPOTLIGHT',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          featuredProgram.title,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            height: 1.2,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'By ${featuredProgram.mentor}',
+                                          style: TextStyle(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.8,
+                                            ),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.arrow_forward_rounded,
+                                      color: Colors.white,
+                                      size: 18,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.3),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.arrow_forward_rounded,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -216,63 +265,15 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 35),
             ],
-
-            // --- 3. DAILY PROGRESS BAR & QUICK ACTIONS (REPLACED ACTIVE PROJECTS SECTION) ---
             _buildDailyProgressBar(
               completedTasks: completedTasksCount,
               totalTasks: totalTasksCount > 0 ? totalTasksCount : 4,
             ),
             const SizedBox(height: 16),
-
             _buildQuickActionsBar(context),
             const SizedBox(height: 35),
-<<<<<<< HEAD
-            const SectionHeader(title: 'Active Projects'),
-            const SizedBox(height: 18),
-            SizedBox(
-              height: 230,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: activeProjects.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 18),
-                itemBuilder: (context, index) {
-                  final currentProject = activeProjects[index];
-
-                  return ProjectCard(
-                    project: currentProject,
-                    onTap: () {
-                      if (currentProject.title == "Team Dashboard") {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                TeamDashboardPage(program: programs.first),
-                          ),
-                        );
-                      } else {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ProjectDetailsPage(project: currentProject),
-                          ),
-                        );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 35),
             const SectionHeader(title: 'Upcoming Tasks'),
             const SizedBox(height: 18),
-
-            // Updated to find the matching project title for each task item
-=======
-
-            // --- 4. UPCOMING TASKS ---
-            const SectionHeader(title: 'Upcoming Tasks'),
-            const SizedBox(height: 18),
-            
->>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
             ...upcomingTasks.map((task) {
               final parentProject = activeProjects.firstWhere(
                 (project) => project.tasks.any(
@@ -283,10 +284,7 @@ class HomePage extends StatelessWidget {
 
               return TaskTile(task: task, programName: parentProject.title);
             }),
-
             const SizedBox(height: 20),
-
-            // --- 5. RECENT ACTIVITY ---
             const SectionHeader(title: 'Recent Activity'),
             const Card(
               child: ListTile(
@@ -307,16 +305,14 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-<<<<<<< HEAD
-}
-=======
 
-  // --- WIDGET: DAILY PROGRESS BAR ---
   Widget _buildDailyProgressBar({
     required int completedTasks,
     required int totalTasks,
   }) {
-    final double progress = totalTasks > 0 ? (completedTasks / totalTasks).clamp(0.0, 1.0) : 0.0;
+    final double progress = totalTasks > 0
+        ? (completedTasks / totalTasks).clamp(0.0, 1.0)
+        : 0.0;
     final int percentage = (progress * 100).round();
 
     return Container(
@@ -361,7 +357,10 @@ class HomePage extends StatelessWidget {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF7B7BFF).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
@@ -382,10 +381,7 @@ class HomePage extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: Stack(
               children: [
-                Container(
-                  height: 12,
-                  color: Colors.grey.shade200,
-                ),
+                Container(height: 12, color: Colors.grey.shade200),
                 LayoutBuilder(
                   builder: (context, constraints) {
                     return AnimatedContainer(
@@ -417,7 +413,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // --- WIDGET: QUICK ACTIONS BAR ---
   Widget _buildQuickActionsBar(BuildContext context) {
     return Row(
       children: [
@@ -457,7 +452,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // --- HELPER METHODS FOR STATS CARD ---
   Widget _buildStatItem(String label, String value, IconData icon) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -473,23 +467,12 @@ class HomePage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            color: Colors.grey,
-          ),
-        ),
+        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
       ],
     );
   }
 
   Widget _buildVerticalDivider() {
-    return Container(
-      height: 35,
-      width: 1,
-      color: Colors.grey.shade200,
-    );
+    return Container(height: 35, width: 1, color: Colors.grey.shade200);
   }
 }
->>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
