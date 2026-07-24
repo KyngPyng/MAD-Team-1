@@ -1,5 +1,5 @@
 class ProgramModel {
-  final String id; // Added to differentiate programs cleanly
+  final String id;
   final String title;
   final String category;
   final String level;
@@ -8,10 +8,10 @@ class ProgramModel {
   final int students;
   final double progress;
   final String image;
-  final String mentor;
-  final String description;
-  final List<String> modules;
+  final String mentor; // Keep the field name your app expects
+  final List<String> modules; // Keep the field name your app expects
   final bool isEnrolled;
+  final String description;
 
   const ProgramModel({
     required this.id,
@@ -23,15 +23,15 @@ class ProgramModel {
     required this.students,
     required this.progress,
     required this.image,
-    this.mentor = 'TeamSync Mentor',
-    this.description = '',
-    this.modules = const [],
-    this.isEnrolled = false,
+    required this.mentor,
+    required this.modules,
+    required this.isEnrolled,
+    required this.description,
   });
 
-  // Factory constructor to safely parse JSON data
   factory ProgramModel.fromJson(Map<String, dynamic> json) {
     return ProgramModel(
+<<<<<<< HEAD
       id: (json['id'] as String?) ?? '',
       title: (json['title'] as String?) ?? '',
       category: (json['category'] as String?) ?? '',
@@ -47,6 +47,23 @@ class ProgramModel {
           .map((e) => e.toString())
           .toList(),
       isEnrolled: (json['isEnrolled'] as bool?) ?? false,
+=======
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      category: json['category'] ?? '',
+      level: json['level'] ?? '',
+      duration: json['duration'] ?? '',
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      students: json['students'] as int? ?? 0,
+      progress: (json['progress'] as num?)?.toDouble() ?? 0.0,
+      image: json['imageUrl'] ?? json['image'] ?? '',
+      // Map the JSON 'instructor' key to your app's 'mentor' field
+      mentor: json['instructor'] ?? json['mentor'] ?? '',
+      // Map the JSON 'topics' key to your app's 'modules' field
+      modules: List<String>.from(json['topics'] ?? json['modules'] ?? []),
+      isEnrolled: json['isEnrolled'] as bool? ?? false,
+      description: json['description'] ?? '',
+>>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
     );
   }
 }

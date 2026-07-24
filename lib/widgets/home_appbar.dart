@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../data/mock_data_repository.dart';
 import '../screens/teams/team_dashboard_page.dart';
-import '../screens/profile_screen.dart'; // Import your profile screen here
+import '../screens/profile_screen.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
@@ -12,17 +12,49 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      automaticallyImplyLeading: false, // Prevents accidental back arrows
+      automaticallyImplyLeading: false,
+
+      // --- TOP-LEFT LOGO ---
+      leadingWidth: 80,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            width: 52,
+            height: 52,
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Image.asset(
+              'assets/images/teamsync_logo.png',
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(
+                  Icons.shield_rounded,
+                  color: Color(0xFF7B7BFF),
+                  size: 32,
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+
+      // --- CENTERED TITLE ---
+      centerTitle: true,
       title: const Text(
         'Workspace',
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
-          fontSize: 22,
+          fontSize: 20,
         ),
       ),
+
+      // --- RIGHT ACTIONS ---
       actions: [
-        // The Team Dashboard overlay trigger icon
         IconButton(
           icon: const Icon(
             Icons.groups_rounded,
@@ -37,11 +69,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         // Interactive Profile Tab Button
         GestureDetector(
           onTap: () {
-            // UPDATED: Using rootNavigator targets the top-level stack above the navigation shell
             Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (context) => const ProfileScreen(),
-                // Make sure to match the expected string argument check in your ProfileScreen state
                 settings: const RouteSettings(arguments: "Learner"),
               ),
             );
@@ -56,7 +86,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 16),
       ],
     );
   }
@@ -109,7 +139,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
                           return InkWell(
                             onTap: () {
-                              Navigator.pop(context); // Dismiss selection sheet
+                              Navigator.pop(context);
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) =>

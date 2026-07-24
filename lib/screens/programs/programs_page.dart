@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../data/mock_data_repository.dart';
 import '../../models/program_model.dart';
+import '../../services/program_service.dart';
 import '../../widgets/category_chip.dart';
 import '../../widgets/program_card.dart';
 import 'program_details_page.dart';
@@ -18,6 +18,11 @@ class _ProgramsPageState extends State<ProgramsPage> {
   int selectedCategory = 0;
   String query = '';
   final TextEditingController _searchController = TextEditingController();
+  final ProgramService _programService = ProgramService();
+
+  List<ProgramModel> _allPrograms = [];
+  bool _isLoading = true;
+  String? _errorMessage;
 
   final List<String> categories = const [
     "All",
@@ -26,6 +31,38 @@ class _ProgramsPageState extends State<ProgramsPage> {
     "Design",
     "Cloud",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final data = await _programService.fetchPrograms();
+
+      print("--- DEBUG DATA LOAD ---");
+      print("Total programs loaded: ${data.length}");
+      for (var program in data) {
+        print(
+          "Title: ${program.title} | Category: ${program.category} | isEnrolled: ${program.isEnrolled}",
+        );
+      }
+      print("-----------------------");
+
+      setState(() {
+        _allPrograms = data;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("CRITICAL ERROR LOADING JSON: $e");
+      setState(() {
+        _errorMessage = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -43,26 +80,37 @@ class _ProgramsPageState extends State<ProgramsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final programs = MockDataRepository.instance.programs;
-    final loadError = MockDataRepository.instance.loadError;
-    final filteredPrograms = programs.where((program) {
-      final matchesCategory =
-          selectedCategory == 0 ||
-          program.category == categories[selectedCategory];
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(child: Text("Error: $_errorMessage")),
+      );
+    }
+
+    final filteredPrograms = _allPrograms.where((program) {
+      final matchesCategory = selectedCategory == 0 ||
+          program.category.trim().toLowerCase() ==
+              categories[selectedCategory].trim().toLowerCase();
+
       final normalizedQuery = query.toLowerCase();
-      final matchesQuery =
-          normalizedQuery.isEmpty ||
+      final matchesQuery = normalizedQuery.isEmpty ||
           program.title.toLowerCase().contains(normalizedQuery) ||
           program.category.toLowerCase().contains(normalizedQuery);
+
       return matchesCategory && matchesQuery;
     }).toList();
 
-    final enrolledPrograms = filteredPrograms
-        .where((p) => p.isEnrolled)
-        .toList();
-    final discoverPrograms = filteredPrograms
-        .where((p) => !p.isEnrolled)
-        .toList();
+    final enrolledPrograms =
+        filteredPrograms.where((p) => p.isEnrolled).toList();
+    final discoverPrograms =
+        filteredPrograms.where((p) => !p.isEnrolled).toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -71,7 +119,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "Programs",
+          "Learning Hub",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -85,16 +133,6 @@ class _ProgramsPageState extends State<ProgramsPage> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 10, 24, 30),
           children: [
-            if (loadError != null) ...[
-              MaterialBanner(
-                backgroundColor: Colors.red.withValues(alpha: 0.08),
-                content: Text(loadError),
-                actions: [
-                  TextButton(onPressed: () {}, child: const Text('OK')),
-                ],
-              ),
-              const SizedBox(height: 16),
-            ],
             Text(
               "Find Your Next Program",
               style: Theme.of(
@@ -103,7 +141,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
             ),
             const SizedBox(height: 6),
             Text(
-              "Continue learning and improve your skills.",
+              "Explore courses & level up your skills.",
               style: TextStyle(color: Colors.grey.shade600),
             ),
             const SizedBox(height: 24),
@@ -197,7 +235,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
                 ),
               )
             else ...[
-              // --- SECTION 1: MY ENROLLED PROGRAMS (Horizontal Slider) ---
+              // --- SECTION 1: MY ENROLLED PROGRAMS ---
               if (enrolledPrograms.isNotEmpty) ...[
                 Text(
                   "My Enrolled Programs",
@@ -227,7 +265,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
                 const SizedBox(height: 35),
               ],
 
-              // --- SECTION 2: DISCOVER PROGRAMS (Vertical Stream) ---
+              // --- SECTION 2: DISCOVER PROGRAMS ---
               if (discoverPrograms.isNotEmpty) ...[
                 Text(
                   "Discover Programs",
@@ -240,7 +278,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: discoverPrograms.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 16),
+                  separatorBuilder: (_, _) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
                     final program = discoverPrograms[index];
                     return ProgramCard(

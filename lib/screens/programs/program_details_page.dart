@@ -128,7 +128,8 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
             contentPadding: EdgeInsets.zero,
             leading: const CircleAvatar(child: Icon(Icons.person_outline)),
             title: const Text('Mentor'),
-            subtitle: Text(program.mentor),
+            // Updated property from program.mentor to program.instructor
+            subtitle: Text(program.mentor), 
           ),
           const SizedBox(height: 16),
           Text(
@@ -136,11 +137,12 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
+          // Updated collection from program.modules to program.topics
           ...program.modules.map(
-            (module) => ListTile(
+            (topic) => ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.check_circle_outline),
-              title: Text(module),
+              title: Text(topic),
             ),
           ),
           const SizedBox(height: 16),

@@ -3,13 +3,13 @@
     {
       "id": "p1",
       "title": "Mobile App Development with Flutter",
-      "category": "Software Engineering",
+      "category": "flutter",
       "level": "Intermediate",
       "duration": "4 Weeks",
       "rating": 4.8,
       "students": 120,
       "progress": 0.0,
-      "imageUrl": "https://placeholder.pics/svg/300x200",
+      "imageUrl": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&auto=format&fit=crop",
       "instructor": "Alex Mercer",
       "description": "Learn to build high-performance, cross-platform mobile applications using Flutter and Dart from scratch.",
       "topics": [
@@ -23,13 +23,13 @@
     {
       "id": "p2",
       "title": "Project Management Associate",
-      "category": "Management",
+      "category": "Cloud",
       "level": "Beginner",
       "duration": "4 Weeks",
       "rating": 4.9,
       "students": 85,
       "progress": 0.0,
-      "imageUrl": "https://placeholder.pics/svg/300x200",
+      "imageUrl": "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=900&auto=format&fit=crop",
       "instructor": "Sarah Jenkins",
       "description": "Master project planning, resource allocation, risk management, and team coordination workflows.",
       "topics": [
@@ -39,6 +39,66 @@
         "Closing & Final Documentation"
       ],
       "isEnrolled": false
+    },
+    {
+      "id": "p3",
+      "title": "Introduction to UI/UX Design",
+      "category": "Design",
+      "level": "Beginner",
+      "duration": "4 Weeks",
+      "rating": 4.7,
+      "students": 210,
+      "progress": 0.0,
+      "imageUrl": "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=900&auto=format&fit=crop",
+      "instructor": "Elena Rostova",
+      "description": "Understand user research, wireframing, prototyping, and design systems using modern industry tools.",
+      "topics": [
+        "User Research & Personas",
+        "Wireframing & Low-Fi Layouts",
+        "Design Systems & Components",
+        "High-Fidelity Prototyping"
+      ],
+      "isEnrolled": true
+    },
+    {
+      "id": "p4",
+      "title": "Data Structures & Algorithms",
+      "category": "Design",
+      "level": "Advanced",
+      "duration": "6 Weeks",
+      "rating": 4.9,
+      "students": 145,
+      "progress": 0.0,
+      "imageUrl": "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=900&auto=format&fit=crop",
+      "instructor": "Dr. Marcus Vance",
+      "description": "Deep dive into complex data structures, algorithmic complexity analysis, and efficient problem-solving.",
+      "topics": [
+        "Time & Space Complexity (Big O)",
+        "Trees, Graphs & Traversals",
+        "Sorting & Searching Optimization",
+        "Dynamic Programming Basics"
+      ],
+      "isEnrolled": false
+    },
+    {
+      "id": "p5",
+      "title": "Backend Engineering Fundamentals",
+      "category": "Design",
+      "level": "Intermediate",
+      "duration": "4 Weeks",
+      "rating": 4.6,
+      "students": 98,
+      "progress": 0.0,
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=900&auto=format&fit=crop",
+      "instructor": "David Kross",
+      "description": "Build robust server-side systems, design RESTful APIs, and learn database normalization and security schemas.",
+      "topics": [
+        "HTTP Protocols & Server Basics",
+        "REST API Architecture",
+        "Database Design & SQL vs NoSQL",
+        "Authentication & JWT Security"
+      ],
+      "isEnrolled": true
     }
   ]
 }

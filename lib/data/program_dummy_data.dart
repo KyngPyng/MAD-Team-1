@@ -46,6 +46,7 @@ const List<ProgramModel> programs = [
     progress: 0,
     image: "assets/images/ai.png",
     mentor: 'Amina Yusuf',
+    isEnrolled: true,
     description:
         'Explore core artificial intelligence concepts, model development, and responsible deployment.',
     modules: ['AI foundations', 'Machine learning workflows', 'Responsible AI'],

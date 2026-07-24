@@ -11,6 +11,15 @@ class ProgramCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget buildPlaceholderImage() {
+      return Container(
+        height: 180,
+        color: AppColors.primary.withValues(alpha: .12),
+        alignment: Alignment.center,
+        child: const Icon(Icons.menu_book_rounded, size: 56),
+      );
+    }
+
     return InkWell(
       borderRadius: BorderRadius.circular(24),
       onTap: onTap,
@@ -34,18 +43,21 @@ class ProgramCard extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(24),
               ),
-              child: Image.asset(
-                program.image,
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Container(
-                  height: 180,
-                  color: AppColors.primary.withValues(alpha: .12),
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.menu_book_rounded, size: 56),
-                ),
-              ),
+              child: program.image.startsWith('http')
+                  ? Image.network(
+                      program.image,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => buildPlaceholderImage(),
+                    )
+                  : Image.asset(
+                      program.image,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => buildPlaceholderImage(),
+                    ),
             ),
 
             Padding(

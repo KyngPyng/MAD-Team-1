@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/mock_data_repository.dart';
 import '../../screens/programs/program_details_page.dart';
+<<<<<<< HEAD
 import '../../screens/projects/project_details_page.dart';
 import '../../screens/teams/team_dashboard_page.dart';
+=======
+>>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
 import '../../widgets/greeting_section.dart';
 import '../../widgets/home_appbar.dart';
-import '../../widgets/program_card.dart';
-import '../../widgets/project_card.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/task_tile.dart';
@@ -27,6 +28,11 @@ class HomePage extends StatelessWidget {
     final upcomingTasks = activeProjects
         .expand((project) => project.tasks)
         .take(3);
+
+    final featuredProgram = programs.isNotEmpty ? programs.first : null;
+
+    final totalTasksCount = upcomingTasks.length;
+    final int completedTasksCount = 0;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -50,29 +56,177 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 28),
             const SearchBarWidget(),
             const SizedBox(height: 35),
-            const SectionHeader(title: 'Continue Learning'),
-            const SizedBox(height: 18),
-            SizedBox(
-              height: 540,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: programs.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 18),
-                itemBuilder: (context, index) => SizedBox(
-                  width: 280,
-                  child: ProgramCard(
-                    program: programs[index],
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            ProgramDetailsPage(program: programs[index]),
+
+            // --- 1. SUMMARY STATS CARD ---
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildStatItem('Programs', '${programs.length}', Icons.school_outlined),
+                  _buildVerticalDivider(),
+                  _buildStatItem('Active Projects', '${activeProjects.length}', Icons.folder_open_outlined),
+                  _buildVerticalDivider(),
+                  _buildStatItem('Pending Tasks', '${upcomingTasks.length}', Icons.task_alt_outlined),
+                ],
+              ),
+            ),
+            const SizedBox(height: 35),
+
+            // --- 2. FEATURED PROGRAM BANNER ---
+            if (featuredProgram != null) ...[
+              const SectionHeader(title: 'Featured Program'),
+              const SizedBox(height: 18),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ProgramDetailsPage(program: featuredProgram),
+                  ),
+                ),
+                child: Container(
+                  height: 180,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.25),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
                       ),
+                    ],
+                    image: DecorationImage(
+                      image: NetworkImage(featuredProgram.image),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [
+                          Colors.black.withOpacity(0.15),
+                          Colors.black.withOpacity(0.85),
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withOpacity(0.5),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.auto_awesome, color: Colors.white, size: 12),
+                                SizedBox(width: 4),
+                                Text(
+                                  'SPOTLIGHT',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    featuredProgram.title,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'By ${featuredProgram.mentor}',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.8),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
+              const SizedBox(height: 35),
+            ],
+
+            // --- 3. DAILY PROGRESS BAR & QUICK ACTIONS (REPLACED ACTIVE PROJECTS SECTION) ---
+            _buildDailyProgressBar(
+              completedTasks: completedTasksCount,
+              totalTasks: totalTasksCount > 0 ? totalTasksCount : 4,
             ),
+            const SizedBox(height: 16),
+
+            _buildQuickActionsBar(context),
             const SizedBox(height: 35),
+<<<<<<< HEAD
             const SectionHeader(title: 'Active Projects'),
             const SizedBox(height: 18),
             SizedBox(
@@ -112,6 +266,13 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 18),
 
             // Updated to find the matching project title for each task item
+=======
+
+            // --- 4. UPCOMING TASKS ---
+            const SectionHeader(title: 'Upcoming Tasks'),
+            const SizedBox(height: 18),
+            
+>>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
             ...upcomingTasks.map((task) {
               final parentProject = activeProjects.firstWhere(
                 (project) => project.tasks.any(
@@ -124,6 +285,8 @@ class HomePage extends StatelessWidget {
             }),
 
             const SizedBox(height: 20),
+
+            // --- 5. RECENT ACTIVITY ---
             const SectionHeader(title: 'Recent Activity'),
             const Card(
               child: ListTile(
@@ -144,4 +307,189 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+
+  // --- WIDGET: DAILY PROGRESS BAR ---
+  Widget _buildDailyProgressBar({
+    required int completedTasks,
+    required int totalTasks,
+  }) {
+    final double progress = totalTasks > 0 ? (completedTasks / totalTasks).clamp(0.0, 1.0) : 0.0;
+    final int percentage = (progress * 100).round();
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFF7B7BFF).withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFF7B7BFF).withValues(alpha: 0.2),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF7B7BFF),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.bolt_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Daily Progress',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF7B7BFF).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '$percentage%',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5B5BFF),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Stack(
+              children: [
+                Container(
+                  height: 12,
+                  color: Colors.grey.shade200,
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeOutCubic,
+                      height: 12,
+                      width: constraints.maxWidth * progress,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF7B7BFF),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '$completedTasks of $totalTasks daily targets completed',
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- WIDGET: QUICK ACTIONS BAR ---
+  Widget _buildQuickActionsBar(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.upload_file_rounded, size: 18),
+            label: const Text('Submit Task'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.calendar_today_rounded, size: 18),
+            label: const Text('View Schedule'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primary,
+              side: BorderSide(color: AppColors.primary, width: 1.5),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // --- HELPER METHODS FOR STATS CARD ---
+  Widget _buildStatItem(String label, String value, IconData icon) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: AppColors.primary, size: 22),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 11,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVerticalDivider() {
+    return Container(
+      height: 35,
+      width: 1,
+      color: Colors.grey.shade200,
+    );
+  }
+}
+>>>>>>> 381a4bb (Refactor HomePage UI: replace Active Projects list with Daily Progress and Quick Actions)
