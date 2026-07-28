@@ -1,208 +1,131 @@
 # teamSync
 
-A dedicated mobile project tracking application designed to streamline workspace management and deliverable tracking for virtual interns.
+teamSync is a Flutter mobile app for internship and team workflow tracking. It combines login, role-based navigation, program browsing, program details, feedback submission, and team workspace views into a single polished mobile UI.
 
-## Purpose & Objective
-The primary objective of **teamSync** is to bridge the gap between complex web-based project dashboards and mobile productivity. By transforming dense group tracks and milestone timelines into an intuitive, mobile-first interface, teamSync allows users to view synchronized team progress, track strict sprint deadlines, and coordinate project management tasks seamlessly on the go.
+## Project Overview
 
-## Target User Roles
-*   **Learners / Interns:** Access localized group workspaces, monitor completion percentages, and review exact criteria for required milestone submissions.
-*   **Admins / Managers:** Track team-wide sprint completion, oversee project timelines, and manage multi-tier track deliverables.
+The app is built for two roles:
 
-## Core Features
-*   **Authentication & Auto-Sync:** Recognizes user identity at login to automatically pull and synchronize the specific team track workspace tied to that user's profile email.
-*   **Phase-Driven Milestone Tracking:** Groups project progress into clean, interactive weekly timelines that focus heavily on actionable deliverables over static documentation.
-*   **Sprint Breakdown Checklists:** Offers a granular look into specific task requirements, sub-tasks, and individual milestone completion statuses.
-*   **Adaptive View Filters:** Allows users to parse tasks instantly by completion state (All, In Progress, Completed, Planning) to maximize focus.
+- Learner: sees the home workspace, programs, projects, team dashboard, and profile actions.
+- Admin: sees the admin dashboard, users, programs, and reports tabs.
 
-## This Week's Update
+The app is fully local for the internship demo. It uses mock JSON data and local session storage instead of a live backend.
 
-* Program listing and program details now load from `assets/data/mock_data.json` through a shared repository.
-* The home, projects, and team dashboard screens now consume the same JSON-backed data source.
-* A validated feedback form was added to the profile screen.
-* Basic loading/error handling was added for mock data parsing so the UI can fall back to empty states if the JSON asset is unavailable.
+## Purpose
 
-## Application Architecture & User Flow
+The goal of teamSync is to provide a clean mobile-first experience for:
 
-The navigation pipeline utilizes role-based routing payloads to serve specific dashboard layouts depending on the user type:
+- checking current work and progress
+- browsing programs and program details
+- submitting feedback
+- moving between screens quickly with consistent navigation
 
-```text
-[ Login Screen ]
-    |
-    ▼ (Passes Input Name & Role Payload)
-[ Home Dashboard Route ]
-    |
-    ├─► Learner Workspace: Personalized Header Greeting ("Hello, [Input Name]!")
-    |   └─► Displays Urgent Deadlines & Program Track Task Navigation
-    |
-    └─► Admin Portal: Personalized Header Greeting ("Hello, [Input Name]!")
-        └─► Displays Global Stat Rows, Cohort Summaries, & System Status
+## Features
 
-
-
-```
-
-
-
-
-
----
-# Week 2 Progress
-
-## Working UI Prototype
-
-The low-fidelity wireframes created in Week 1 have been transformed into an interactive Flutter prototype using Material 3 design principles.
-
-### Implemented Screens
-
-- ✅ Login Screen
-- ✅ Home Dashboard
-- ✅ Program Listing Screen
-- ✅ Program Details Screen
-
-All screens are connected through Flutter navigation, allowing users to move seamlessly between the application's core features.
-
----
-
-## Features Implemented
-
-### Authentication
-- Login interface
-- Learner/Admin role selection
-- Google Sign-In UI
-- Responsive Material 3 layout
-
-### Home Dashboard
-- Personalized greeting
-- Search functionality
-- Continue Learning section
-- Active Programs preview
-- Active Projects preview
-- Upcoming Tasks
-- Persistent bottom navigation
-
-### Program Listing
-- Program cards
-- Category filters
-- Progress indicators
-- Search interface
-- Continue Learning actions
-
-### Program Details
-- Program overview
-- Difficulty level
-- Duration
-- Progress tracking
-- Learning information
-
----
-
-## Navigation Flow
-
-```text
-Login
-   │
-   ▼
-Home Dashboard
-   │
-   ├── Program Listing
-   │        │
-   │        ▼
-   │  Program Details
-   │
-   └── Dashboard Sections
-```
-
----
+- Role-based login and signup
+- Remember me login persistence
+- Learner and admin navigation shells
+- Swipe gesture tab switching
+- Animated tab transitions
+- Predictive back support on Android
+- Double-back exit confirmation
+- Bottom-sheet profile popup
+- Team dashboard with compact chat flow
+- Program listing and program details
+- Feedback form with validation
+- Shared mock JSON data source
 
 ## Screenshots
 
-The following screenshots showcase the current implementation of the Week 2 UI prototype.
+| Login | Home |
+| --- | --- |
+| ![Login screen](assets/screenshots/login.png) | ![Home screen](assets/screenshots/home.png) |
 
-<table>
-<tr>
-<td align="center">
-<img src="assets/screenshots/login.png" width="220" alt="Login Screen"><br>
-<b>Login Screen</b>
-</td>
-<td align="center">
-<img src="assets/screenshots/home.png" width="220" alt="Home Dashboard"><br>
-<b>Home Dashboard</b>
-</td>
-</tr>
+| Programs | Program Details |
+| --- | --- |
+| ![Program listing](assets/screenshots/programs.png) | ![Program details](assets/screenshots/program_detail.png) |
 
-<tr>
-<td align="center">
-<img src="assets/screenshots/programs.png" width="220" alt="Program Listing"><br>
-<b>Program Listing</b>
-</td>
-<td align="center">
-<img src="assets/screenshots/program_detail.png" width="220" alt="Program Details"><br>
-<b>Program Details</b>
-</td>
-</tr>
-</table>
----
+## Setup Instructions
 
-## Technologies Used
+### Prerequisites
 
-- Flutter
-- Dart
-- Material 3
-- Google Fonts
+- Flutter SDK installed
+- Android Studio, VS Code, or another Flutter-compatible IDE
+- Android emulator or physical device
 
----
+### Run the app
 
-## Project Structure
+```bash
+flutter pub get
+flutter run
+```
+
+### Build for Android
+
+```bash
+flutter build apk
+```
+
+## Test Accounts
+
+The app works with local mock credentials saved on the device. You can also use the demo login during testing.
+
+- Demo email: `demo@teamsync.com`
+- Demo password: `Demo@123`
+
+## Repository Structure
 
 ```text
 lib/
 ├── core/
 ├── data/
-├── models/
-├── routes/
 ├── screens/
-│   ├── login/
+│   ├── admin/
 │   ├── home/
-│   └── programs/
-├── services/
+│   ├── login/
+│   ├── programs/
+│   ├── projects/
+│   ├── register/
+│   └── teams/
 └── widgets/
+assets/
+├── data/
+└── screenshots/
 ```
 
----
+## Changelog
 
-## Current Development Status
+### 2026-07-28
 
-| Module | Status |
-|---------|--------|
-| Login | ✅ Complete |
-| Home Dashboard | ✅ Complete |
-| Program Listing | ✅ Complete |
-| Program Details | ✅ Complete |
-| Navigation | ✅ Complete |
-| Responsive UI | ✅ Complete |
+- Added admin navigation pages and admin bottom navigation.
+- Added bottom-sheet profile popup and compact profile actions.
+- Fixed team dashboard navigation and chat placement.
+- Added predictive back support and double-back exit confirmation.
+- Added remember me login persistence and app launch restore.
+- Added swipe-based tab switching with slide animation.
+- Polished bottom navigation visuals and global route flow.
 
----
-This repository represents the Week 2 deliverable for the **Excelerate Mobile App Development with Flutter Virtual Internship**, demonstrating the transition from low-fidelity wireframes to a functional Flutter UI prototype.
+### Earlier milestones
 
+- Connected program listing and program details to JSON-backed mock data.
+- Added feedback form validation and submission flow.
+- Refined the home dashboard and workspace layout.
+- Added local registration and account-backed profile data.
 
-# Week 3 Progress
+## Contribution Log
 
-## JSON-Backed Data
+This repository was updated in clear feature phases during the final build session:
 
-- Program listing and program details now load from `assets/data/mock_data.json`.
-- Home, projects, team dashboard, and navigation screens use the same shared mock repository.
-- Dummy Dart data files were removed to keep the data layer in one place.
+1. Admin workspace and navigation cleanup
+2. Profile sheet and compact account actions
+3. Team dashboard and chat flow fixes
+4. Predictive back and exit behavior
+5. Remember me login persistence
+6. Swipe tab switching with slide animation
+7. Final README and release cleanup
 
-## Working Form
+## Notes
 
-- A feedback form was added to the profile screen.
-- The form validates name, email, and feedback text before submission.
-- Successful submission shows a snackbar and returns to the previous screen.
-
-## Loading and Error Handling
-
-- Mock data is loaded at app startup.
-- If the JSON asset cannot be loaded, the app falls back to empty states instead of crashing.
-
----
+- This is a local demo app for the internship submission.
+- No live backend is required for the final version.
+- All shared navigation and profile behavior is handled in-app.
