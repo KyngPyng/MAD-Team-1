@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/text_styles.dart';
+import '../../data/app_session_service.dart';
 import '../../data/local_auth_service.dart';
+import '../admin/admin_navigation_page.dart';
+import '../main_navigation_page.dart';
 import '../../widgets/background_wave.dart';
 import '../../widgets/glass_textfield.dart';
 import '../../widgets/gradient_button.dart';
@@ -49,10 +52,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
     if (!mounted) return;
 
+    final session = SavedCredentials(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+      role: _role,
+    );
+    AppSessionService.instance.setCurrentUser(session);
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Account saved locally for demo login.')),
     );
-    Navigator.of(context).pop(_emailController.text.trim());
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => _role == 'Admin'
+            ? const AdminNavigationPage()
+            : const MainNavigationPage(),
+        settings: RouteSettings(
+          arguments: {
+            'role': _role,
+            'flashMessage': 'Account created successfully.',
+          },
+        ),
+      ),
+      (route) => false,
+    );
   }
 
   @override
@@ -168,7 +192,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               ),
                               const SizedBox(height: 16),
                               DropdownButtonFormField<String>(
-                                value: _role,
+                                initialValue: _role,
                                 decoration: const InputDecoration(
                                   labelText: 'Role',
                                   border: OutlineInputBorder(),

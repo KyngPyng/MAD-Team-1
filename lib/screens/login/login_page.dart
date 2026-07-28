@@ -5,6 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/theme/text_styles.dart';
 import '../../data/app_session_service.dart';
 import '../../data/local_auth_service.dart';
+import '../admin/admin_navigation_page.dart';
 import '../../widgets/glass_textfield.dart';
 import '../register/register_page.dart';
 import '../main_navigation_page.dart';
@@ -28,6 +29,19 @@ class _LoginPageState extends State<LoginPage> {
 
   // Roles match the dynamic string checks in ProfileScreen ('Learner' / 'Admin')
   String role = "Learner";
+  bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRememberMe();
+  }
+
+  Future<void> _loadRememberMe() async {
+    final rememberMe = await LocalAuthService.instance.isRememberMeEnabled();
+    if (!mounted) return;
+    setState(() => _rememberMe = rememberMe);
+  }
 
   @override
   void dispose() {
@@ -62,10 +76,20 @@ class _LoginPageState extends State<LoginPage> {
 
     AppSessionService.instance.setCurrentUser(session);
 
+    if (_rememberMe) {
+      await LocalAuthService.instance.saveRememberedSession(session);
+    } else {
+      await LocalAuthService.instance.clearRememberedSession();
+    }
+
+    if (!mounted) return;
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => const MainNavigationPage(),
+        builder: (_) => session.role == 'Admin'
+            ? const AdminNavigationPage()
+            : const MainNavigationPage(),
         settings: RouteSettings(arguments: session.role),
       ),
     );
@@ -358,6 +382,21 @@ class _LoginPageState extends State<LoginPage> {
                                     child: TextButton(
                                       onPressed: () {},
                                       child: const Text("Forgot Password?"),
+                                    ),
+                                  ),
+                                  CheckboxListTile(
+                                    value: _rememberMe,
+                                    onChanged: (value) => setState(
+                                      () => _rememberMe = value ?? false,
+                                    ),
+                                    contentPadding: EdgeInsets.zero,
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    dense: true,
+                                    visualDensity: VisualDensity.compact,
+                                    title: const Text('Remember me'),
+                                    subtitle: const Text(
+                                      'Keep me signed in on this device',
                                     ),
                                   ),
                                   const SizedBox(height: 2),

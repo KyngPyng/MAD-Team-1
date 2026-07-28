@@ -23,6 +23,11 @@ class LocalAuthService {
   static const _emailKey = 'teamSync.email';
   static const _passwordKey = 'teamSync.password';
   static const _roleKey = 'teamSync.role';
+  static const _rememberKey = 'teamSync.rememberMe';
+  static const _sessionNameKey = 'teamSync.session.name';
+  static const _sessionEmailKey = 'teamSync.session.email';
+  static const _sessionPasswordKey = 'teamSync.session.password';
+  static const _sessionRoleKey = 'teamSync.session.role';
 
   static const demoEmail = 'demo@teamsync.com';
   static const demoPassword = 'Demo@123';
@@ -54,6 +59,49 @@ class LocalAuthService {
       password: password,
       role: prefs.getString(_roleKey) ?? 'Learner',
     );
+  }
+
+  Future<void> saveRememberedSession(SavedCredentials user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_rememberKey, true);
+    await prefs.setString(_sessionNameKey, user.name);
+    await prefs.setString(_sessionEmailKey, user.email);
+    await prefs.setString(_sessionPasswordKey, user.password);
+    await prefs.setString(_sessionRoleKey, user.role);
+  }
+
+  Future<SavedCredentials?> readRememberedSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_rememberKey) != true) {
+      return null;
+    }
+
+    final email = prefs.getString(_sessionEmailKey);
+    final password = prefs.getString(_sessionPasswordKey);
+    if (email == null || password == null) {
+      return null;
+    }
+
+    return SavedCredentials(
+      name: prefs.getString(_sessionNameKey) ?? '',
+      email: email,
+      password: password,
+      role: prefs.getString(_sessionRoleKey) ?? 'Learner',
+    );
+  }
+
+  Future<bool> isRememberMeEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_rememberKey) ?? false;
+  }
+
+  Future<void> clearRememberedSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_rememberKey);
+    await prefs.remove(_sessionNameKey);
+    await prefs.remove(_sessionEmailKey);
+    await prefs.remove(_sessionPasswordKey);
+    await prefs.remove(_sessionRoleKey);
   }
 
   Future<SavedCredentials?> authenticate({

@@ -20,4 +20,13 @@ class AppSessionService {
   Future<SavedCredentials?> resolveCurrentUser() async {
     return _currentUser ?? LocalAuthService.instance.readSavedCredentials();
   }
+
+  Future<SavedCredentials?> resolveLaunchSession() async {
+    final remembered = await LocalAuthService.instance.readRememberedSession();
+    if (remembered != null) {
+      return remembered;
+    }
+
+    return null;
+  }
 }
