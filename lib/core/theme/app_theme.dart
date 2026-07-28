@@ -17,6 +17,12 @@ class AppTheme {
       brightness: Brightness.light,
     ),
 
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: <TargetPlatform, PageTransitionsBuilder>{
+        TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+      },
+    ),
+
     textTheme: GoogleFonts.poppinsTextTheme(),
 
     appBarTheme: const AppBarTheme(

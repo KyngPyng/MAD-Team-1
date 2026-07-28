@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/floating_bottom_nav.dart';
@@ -14,8 +15,35 @@ class MainNavigationPage extends StatefulWidget {
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int _currentIndex = 0;
+  bool _didShowFlashMessage = false;
+  DateTime? _lastBackPressedAt;
+  late final PageController _pageController = PageController();
 
   final _navigatorKeys = List.generate(3, (_) => GlobalKey<NavigatorState>());
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_didShowFlashMessage) return;
+
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is Map && args['flashMessage'] is String) {
+      _didShowFlashMessage = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(args['flashMessage'] as String)));
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +54,26 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     ];
 
     return PopScope(
-      canPop: !(_navigatorKeys[_currentIndex].currentState?.canPop() ?? false),
+      canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop &&
-            (_navigatorKeys[_currentIndex].currentState?.canPop() ?? false)) {
-          _navigatorKeys[_currentIndex].currentState!.pop();
+        if (didPop) return;
+        final navigator = _navigatorKeys[_currentIndex].currentState;
+        if (navigator?.canPop() ?? false) {
+          navigator!.pop();
+          return;
         }
+
+        final now = DateTime.now();
+        if (_lastBackPressedAt != null &&
+            now.difference(_lastBackPressedAt!) < const Duration(seconds: 2)) {
+          SystemNavigator.pop();
+          return;
+        }
+
+        _lastBackPressedAt = now;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Press back again to exit')),
+        );
       },
       child: Scaffold(
         extendBody: true,
@@ -50,8 +92,13 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
               ),
             ),
             Positioned.fill(
-              child: IndexedStack(
-                index: _currentIndex,
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  if (index != _currentIndex) {
+                    setState(() => _currentIndex = index);
+                  }
+                },
                 children: List.generate(
                   pages.length,
                   (index) => Navigator(
@@ -66,9 +113,19 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         ),
         bottomNavigationBar: FloatingBottomNav(
           currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
+          onTap: _selectTab,
         ),
       ),
+    );
+  }
+
+  void _selectTab(int index) {
+    if (index == _currentIndex) return;
+    setState(() => _currentIndex = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
     );
   }
 }
