@@ -63,8 +63,14 @@ flutter run
 ### Build for Android
 
 ```bash
-flutter build apk
+flutter build apk --release
 ```
+
+The release APKs are written to the build output folders at `build/app/outputs/flutter-apk/app-release.apk` and `build/app/outputs/apk/release/`
+
+### Download the release APK
+
+- Download the APK from the latest GitHub Release asset once it has been uploaded.
 
 ## Test Accounts
 
