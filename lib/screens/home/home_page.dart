@@ -141,15 +141,16 @@ class _HomePageState extends State<HomePage> {
                         Image.asset(
                           featuredProgram.image,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            color: const Color(0xFF1C2A55),
-                            alignment: Alignment.center,
-                            child: const Icon(
-                              Icons.menu_book_rounded,
-                              color: Colors.white,
-                              size: 52,
-                            ),
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                color: const Color(0xFF1C2A55),
+                                alignment: Alignment.center,
+                                child: const Icon(
+                                  Icons.menu_book_rounded,
+                                  color: Colors.white,
+                                  size: 52,
+                                ),
+                              ),
                         ),
                         Container(
                           padding: const EdgeInsets.all(20),

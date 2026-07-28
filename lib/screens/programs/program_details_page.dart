@@ -23,8 +23,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
   }
 
   void _navigateToDashboard(BuildContext context) {
-    Navigator.push(
-      context,
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (_) => TeamDashboardPage(program: widget.program),
       ),
@@ -129,7 +128,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
             leading: const CircleAvatar(child: Icon(Icons.person_outline)),
             title: const Text('Mentor'),
             // Updated property from program.mentor to program.instructor
-            subtitle: Text(program.mentor), 
+            subtitle: Text(program.mentor),
           ),
           const SizedBox(height: 16),
           Text(

@@ -23,9 +23,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Container(
             width: 52,
             height: 52,
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
+            decoration: const BoxDecoration(color: Colors.transparent),
             clipBehavior: Clip.antiAlias,
             child: Image.asset(
               'assets/images/teamsync_logo.png',
@@ -69,12 +67,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         // Interactive Profile Tab Button
         GestureDetector(
           onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => const ProfileScreen(),
-                settings: const RouteSettings(arguments: "Learner"),
-              ),
-            );
+            ProfileScreen.showBottomSheet(context);
           },
           child: const CircleAvatar(
             radius: 18,
@@ -140,7 +133,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                           return InkWell(
                             onTap: () {
                               Navigator.pop(context);
-                              Navigator.of(context).push(
+                              Navigator.of(context, rootNavigator: true).push(
                                 MaterialPageRoute(
                                   builder: (_) =>
                                       TeamDashboardPage(program: track),
@@ -157,8 +150,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: const Color(0xFF7B7BFF)
-                                        .withValues(alpha: 0.15),
+                                    backgroundColor: const Color(
+                                      0xFF7B7BFF,
+                                    ).withValues(alpha: 0.15),
                                     child: const Icon(
                                       Icons.hub_rounded,
                                       color: Color(0xFF7B7BFF),

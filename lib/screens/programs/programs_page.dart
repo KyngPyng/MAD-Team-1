@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../models/program_model.dart';
 import '../../services/program_service.dart';
 import '../../widgets/category_chip.dart';
@@ -42,21 +41,21 @@ class _ProgramsPageState extends State<ProgramsPage> {
     try {
       final data = await _programService.fetchPrograms();
 
-      print("--- DEBUG DATA LOAD ---");
-      print("Total programs loaded: ${data.length}");
+      debugPrint("--- DEBUG DATA LOAD ---");
+      debugPrint("Total programs loaded: ${data.length}");
       for (var program in data) {
-        print(
+        debugPrint(
           "Title: ${program.title} | Category: ${program.category} | isEnrolled: ${program.isEnrolled}",
         );
       }
-      print("-----------------------");
+      debugPrint("-----------------------");
 
       setState(() {
         _allPrograms = data;
         _isLoading = false;
       });
     } catch (e) {
-      print("CRITICAL ERROR LOADING JSON: $e");
+      debugPrint("CRITICAL ERROR LOADING JSON: $e");
       setState(() {
         _errorMessage = e.toString();
         _isLoading = false;
