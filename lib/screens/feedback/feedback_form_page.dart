@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/di/service_locator.dart';
+import '../../notifiers/feedback_notifier.dart';
+import '../../widgets/team_sync_loader.dart';
 
-class FeedbackFormPage extends StatefulWidget {
+class FeedbackFormPage extends StatelessWidget {
   const FeedbackFormPage({super.key});
 
   @override
-  State<FeedbackFormPage> createState() => _FeedbackFormPageState();
+  Widget build(BuildContext context) {
+    // Inject FeedbackNotifier into this subtree using GetIt + ChangeNotifierProvider
+    return ChangeNotifierProvider<FeedbackNotifier>(
+      create: (_) => getIt<FeedbackNotifier>(),
+      child: const _FeedbackFormBody(),
+    );
+  }
 }
 
-class _FeedbackFormPageState extends State<FeedbackFormPage> {
+class _FeedbackFormBody extends StatefulWidget {
+  const _FeedbackFormBody();
+
+  @override
+  State<_FeedbackFormBody> createState() => _FeedbackFormBodyState();
+}
+
+class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -24,20 +41,41 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
     super.dispose();
   }
 
-  void _submit() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+  Future<void> _submit(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Feedback submitted successfully.')),
+    final notifier = context.read<FeedbackNotifier>();
+
+    final success = await notifier.submitFeedback(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      rating: _rating,
+      message: _messageController.text.trim(),
     );
 
-    Navigator.of(context).pop();
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Feedback submitted successfully.')),
+      );
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            notifier.errorMessage ?? 'Failed to submit feedback.',
+          ),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Watch the notifier state so UI automatically updates when status changes
+    final notifier = context.watch<FeedbackNotifier>();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Feedback')),
       body: SingleChildScrollView(
@@ -59,6 +97,7 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
               const SizedBox(height: 24),
               TextFormField(
                 controller: _nameController,
+                enabled: !notifier.isLoading,
                 decoration: const InputDecoration(
                   labelText: 'Your name',
                   border: OutlineInputBorder(),
@@ -73,6 +112,7 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
+                enabled: !notifier.isLoading,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   labelText: 'Email',
@@ -102,15 +142,18 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
                     child: Text('${index + 1} star${index == 0 ? '' : 's'}'),
                   ),
                 ),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _rating = value);
-                  }
-                },
+                onChanged: notifier.isLoading
+                    ? null
+                    : (value) {
+                        if (value != null) {
+                          setState(() => _rating = value);
+                        }
+                      },
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _messageController,
+                enabled: !notifier.isLoading,
                 maxLines: 5,
                 decoration: const InputDecoration(
                   labelText: 'Feedback',
@@ -135,9 +178,17 @@ class _FeedbackFormPageState extends State<FeedbackFormPage> {
                     backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  onPressed: _submit,
-                  icon: const Icon(Icons.send_rounded),
-                  label: const Text('Submit Feedback'),
+                  onPressed: notifier.isLoading ? null : () => _submit(context),
+                  icon: notifier.isLoading
+                      ? const TeamSyncLoader(
+                          size: 20,
+                          strokeWidth: 2.2,
+                          color: Colors.white,
+                        )
+                      : const Icon(Icons.send_rounded),
+                  label: Text(
+                    notifier.isLoading ? 'Submitting...' : 'Submit Feedback',
+                  ),
                 ),
               ),
             ],

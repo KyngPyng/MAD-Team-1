@@ -10,11 +10,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  
+  get_it: ^7.6.0 # or latest version
+  provider: ^6.1.2 # or latest version
+  file_picker: ^8.0.0 # or latest version
   cupertino_icons: ^1.0.8
   google_fonts: ^6.3.0
   http: ^1.2.0
   shared_preferences: ^2.3.2
+  firebase_core: ^4.12.1
+  cloud_firestore: ^6.7.1
 
 dev_dependencies:
   flutter_test:

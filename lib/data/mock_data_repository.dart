@@ -16,22 +16,27 @@ class MockDataRepository {
 
   Future<void> load() async {
     try {
-      final rawJson = await rootBundle.loadString('assets/data/mock_data.json');
+      final rawJson =
+          await rootBundle.loadString('assets/data/mock_data.json');
       final decoded = jsonDecode(rawJson) as Map<String, dynamic>;
 
-      _programs = (decoded['programs'] as List<dynamic>)
-          .map((entry) => ProgramModel.fromJson(entry as Map<String, dynamic>))
+      final rawPrograms = decoded['programs'] as List<dynamic>? ?? [];
+      _programs = rawPrograms
+          .whereType<Map<String, dynamic>>()
+          .map((entry) => ProgramModel.fromJson(entry))
           .toList(growable: false);
 
-      _projects = (decoded['projects'] as List<dynamic>)
-          .map((entry) => ProjectModel.fromJson(entry as Map<String, dynamic>))
+      final rawProjects = decoded['projects'] as List<dynamic>? ?? [];
+      _projects = rawProjects
+          .whereType<Map<String, dynamic>>()
+          .map((entry) => ProjectModel.fromJson(entry))
           .toList(growable: false);
+
       _loadError = null;
     } catch (error) {
       _programs = const [];
       _projects = const [];
       _loadError = 'Mock data could not be loaded.';
-      // Keep the app usable with empty states if the JSON asset fails to load.
       // ignore: avoid_print
       print('MockDataRepository.load failed: $error');
     }

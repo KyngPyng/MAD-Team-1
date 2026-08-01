@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../models/program_model.dart'; // Ensure this matches your file name
+import '../models/program_model.dart';
+import '../models/feedback_model.dart'; // 1. Added import for feedback model
 
 class ProgramService {
   // Fetches programs from the local JSON asset with simulated latency
@@ -24,6 +25,22 @@ class ProgramService {
     } catch (e) {
       // Pass a clean error message up to the UI layer
       throw Exception("Failed to load available programs. Please try again.");
+    }
+  }
+
+  // 2. Added new submitFeedback method
+  Future<bool> submitFeedback(FeedbackModel feedback) async {
+    try {
+      // Simulate 1 second of network latency
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Log the payload to the console so you can verify it in developer tools
+      print('[Mock API Response] Feedback Received Successfully:');
+      print(jsonEncode(feedback.toJson()));
+
+      return true; // Returns true to signify successful submission
+    } catch (e) {
+      return false;
     }
   }
 }

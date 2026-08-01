@@ -19,7 +19,7 @@
       "isEnrolled": true
     },
     {
-      "title": "UI/UX Design",
+      "title": "Introduction to UI/UX Design",
       "category": "Design",
       "level": "Intermediate",
       "duration": "6 Weeks",
@@ -37,27 +37,28 @@
       "isEnrolled": true
     },
     {
-      "title": "Artificial Intelligence",
-      "category": "AI",
-      "level": "Advanced",
-      "duration": "10 Weeks",
-      "rating": 4.9,
-      "students": 2100,
-      "progress": 0,
-      "image": "assets/images/ai.png",
-      "mentor": "Amina Yusuf",
-      "description": "Explore core artificial intelligence concepts, model development, and responsible deployment.",
+      "title": "Backend Engineering Fundamentals",
+      "category": "Backend",
+      "level": "Intermediate",
+      "duration": "4 Weeks",
+      "rating": 4.6,
+      "students": 98,
+      "progress": 0.0,
+      "image": "assets/images/backend.png",
+      "mentor": "David Kross",
+      "description": "Build robust server-side systems, design RESTful APIs, and learn database normalization.",
       "modules": [
-        "AI foundations",
-        "Machine learning workflows",
-        "Responsible AI"
+        "HTTP Protocols & Server Basics",
+        "REST API Architecture",
+        "Database Design & SQL vs NoSQL"
       ],
-      "isEnrolled": false
+      "isEnrolled": true
     }
   ],
   "projects": [
     {
       "title": "E-commerce App",
+      "program": "Introduction to UI/UX Design",
       "description": "Develop features, landing page and improve payment gateway.",
       "image": "assets/images/project1.png",
       "status": "In Progress",
@@ -71,6 +72,7 @@
     },
     {
       "title": "Nexus Mobile App",
+      "program": "Flutter Development",
       "description": "Set up global state management, design scalable UI components, and integrate foundational app features.",
       "image": "assets/images/project2.png",
       "status": "In Progress",
@@ -83,15 +85,16 @@
       ]
     },
     {
-      "title": "Fitness Tracker",
-      "description": "Implement chart logs for daily calorie tracking.",
+      "title": "API Gateway Refactor",
+      "program": "Backend Engineering Fundamentals",
+      "description": "Optimize routes and add JWT authentication protocols.",
       "image": "assets/images/project3.png",
       "status": "Completed",
       "progress": 1,
       "teamMembers": ["AM", "CD"],
       "dueDate": "Jul 2",
       "tasks": [
-        {"title": "Plan calorie tracking milestones", "dueDate": "Jun 28", "completed": true}
+        {"title": "Set up authentication endpoints", "dueDate": "Jun 28", "completed": true}
       ]
     }
   ]

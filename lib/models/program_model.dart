@@ -30,10 +30,6 @@ class ProgramModel {
   });
 
   factory ProgramModel.fromJson(Map<String, dynamic> json) {
-    final modulesJson = json['topics'] ?? json['modules'] ?? const [];
-    final rawImage = json['imageUrl'] ?? json['image'] ?? '';
-    final rawMentor = json['instructor'] ?? json['mentor'] ?? 'TeamSync Mentor';
-
     return ProgramModel(
       id: (json['id'] as String?) ?? '',
       title: (json['title'] as String?) ?? '',
@@ -43,13 +39,34 @@ class ProgramModel {
       rating: ((json['rating'] as num?) ?? 0.0).toDouble(),
       students: ((json['students'] as num?) ?? 0).toInt(),
       progress: ((json['progress'] as num?) ?? 0.0).toDouble(),
-      image: rawImage.toString(),
-      mentor: rawMentor.toString(),
-      modules: (modulesJson as List<dynamic>)
-          .map((entry) => entry.toString())
-          .toList(growable: false),
-      isEnrolled: (json['isEnrolled'] as bool?) ?? false,
+      image: (json['imageUrl'] as String?) ?? (json['image'] as String?) ?? '',
+      mentor: (json['instructor'] as String?) ??
+          (json['mentor'] as String?) ??
+          'TeamSync Mentor',
       description: (json['description'] as String?) ?? '',
+      modules:
+          (json['topics'] as List<dynamic>? ?? json['modules'] as List<dynamic>? ?? [])
+              .map((e) => e.toString())
+              .toList(),
+      isEnrolled: (json['isEnrolled'] as bool?) ?? false,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'category': category,
+      'level': level,
+      'duration': duration,
+      'rating': rating,
+      'students': students,
+      'progress': progress,
+      'imageUrl': image,
+      'instructor': mentor,
+      'description': description,
+      'topics': modules,
+      'isEnrolled': isEnrolled,
+    };
   }
 }

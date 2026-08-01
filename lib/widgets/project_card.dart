@@ -33,10 +33,34 @@ class ProjectCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.folder_copy_rounded,
-                size: 42,
-                color: Colors.white.withValues(alpha: .9),
+              // --- Top Row: Folder Icon & Program Badge ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.folder_copy_rounded,
+                    size: 42,
+                    color: Colors.white.withValues(alpha: .9),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: .2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      project.program,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
 
               const Spacer(),

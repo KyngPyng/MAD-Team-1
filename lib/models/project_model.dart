@@ -9,6 +9,7 @@ class ProjectModel {
   final List<String> teamMembers;
   final List<TaskModel> tasks;
   final String dueDate;
+  final String program; // <--- 1. Added program field
 
   const ProjectModel({
     required this.title,
@@ -19,6 +20,7 @@ class ProjectModel {
     this.teamMembers = const [],
     this.tasks = const [],
     this.dueDate = '',
+    this.program = 'General', // <--- 2. Default value so existing data won't crash
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,7 @@ class ProjectModel {
           .map((task) => TaskModel.fromJson(task as Map<String, dynamic>))
           .toList(growable: false),
       dueDate: (json['dueDate'] as String?) ?? '',
+      program: (json['program'] as String?) ?? 'General', // <--- 3. Parse program from JSON
     );
   }
 }

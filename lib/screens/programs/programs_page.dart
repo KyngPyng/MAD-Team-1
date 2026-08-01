@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../models/program_model.dart';
 import '../../services/program_service.dart';
 import '../../widgets/category_chip.dart';
