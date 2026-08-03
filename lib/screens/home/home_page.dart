@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../data/mock_data_repository.dart';
+import '../../screens/submitdeliverable/submit_deliverable_screen.dart';
 import '../../screens/programs/program_details_page.dart';
 import '../../widgets/greeting_section.dart';
 import '../../widgets/home_appbar.dart';
@@ -9,25 +10,116 @@ import '../../widgets/search_bar_widget.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/task_tile.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _showErrorBanner = true;
+
+  void _onSubmitButtonPressed(BuildContext context) {
+    final enrolledPrograms = MockDataRepository.instance.programs
+        .where((program) => program.isEnrolled)
+        .toList();
+
+    if (enrolledPrograms.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You are not currently enrolled in any programs.'),
+        ),
+      );
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      builder: (modalContext) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Select Enrolled Program',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Choose which program you are submitting this deliverable for:',
+                style: TextStyle(color: Colors.grey[600], fontSize: 13),
+              ),
+              const SizedBox(height: 16),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: enrolledPrograms.length,
+                  separatorBuilder: (_, __) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final program = enrolledPrograms[index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage(program.image),
+                        backgroundColor: Colors.grey[200],
+                      ),
+                      title: Text(
+                        program.title,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text('${program.duration} • ${program.level}'),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.of(modalContext).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => SubmitDeliverableScreen(
+                              selectedProgram: program,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final programs = MockDataRepository.instance.programs;
     final projects = MockDataRepository.instance.projects;
     final loadError = MockDataRepository.instance.loadError;
-    final activeProjects = projects
-        .where((project) => project.progress < 1)
-        .toList();
-    final upcomingTasks = activeProjects
-        .expand((project) => project.tasks)
-        .take(3);
+
+    final activeProjects =
+        projects.where((project) => project.progress < 1).toList();
+
+    // Collect all tasks across active projects
+    final allTasks =
+        activeProjects.expand((project) => project.tasks).toList();
+    
+    // Safely filter completed and upcoming tasks using ?? false
+    final upcomingTasks =
+        allTasks.where((task) => !(task.isCompleted ?? false)).take(3).toList();
 
     final featuredProgram = programs.isNotEmpty ? programs.first : null;
 
-    final totalTasksCount = upcomingTasks.length;
-    final int completedTasksCount = 0;
+    final totalTasksCount = allTasks.length;
+    final completedTasksCount =
+        allTasks.where((task) => task.isCompleted ?? false).length;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -35,19 +127,29 @@ class HomePage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
           children: [
-            if (loadError != null) ...[
+            if (loadError != null && _showErrorBanner) ...[
               MaterialBanner(
                 backgroundColor: Colors.red.withValues(alpha: 0.08),
-                content: Text(loadError),
+                content: Text(
+                  loadError,
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
                 actions: [
-                  TextButton(onPressed: () {}, child: const Text('OK')),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _showErrorBanner = false;
+                      });
+                    },
+                    child: const Text('OK'),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
             ],
             const HomeAppBar(),
             const SizedBox(height: 30),
-            const GreetingSection(name: 'User'),
+            const GreetingSection(name: 'Aneal'),
             const SizedBox(height: 28),
             const SearchBarWidget(),
             const SizedBox(height: 35),
@@ -226,16 +328,28 @@ class HomePage extends StatelessWidget {
             const SectionHeader(title: 'Upcoming Tasks'),
             const SizedBox(height: 18),
 
-            ...upcomingTasks.map((task) {
-              final parentProject = activeProjects.firstWhere(
-                (project) => project.tasks.any(
-                  (t) => t.title == task.title && t.dueDate == task.dueDate,
+            if (upcomingTasks.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  'No pending tasks for today!',
+                  style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
                 ),
-                orElse: () => activeProjects.first,
-              );
+              )
+            else
+              ...upcomingTasks.map((task) {
+                final parentProject = activeProjects.firstWhere(
+                  (project) => project.tasks.any(
+                    (t) => t.title == task.title && t.dueDate == task.dueDate,
+                  ),
+                  orElse: () => activeProjects.first,
+                );
 
-              return TaskTile(task: task, programName: parentProject.title);
-            }),
+                return TaskTile(
+                  task: task,
+                  programName: parentProject.title,
+                );
+              }),
 
             const SizedBox(height: 20),
 
@@ -266,7 +380,8 @@ class HomePage extends StatelessWidget {
     required int completedTasks,
     required int totalTasks,
   }) {
-    final double progress = totalTasks > 0 ? (completedTasks / totalTasks).clamp(0.0, 1.0) : 0.0;
+    final double progress =
+        totalTasks > 0 ? (completedTasks / totalTasks).clamp(0.0, 1.0) : 0.0;
     final int percentage = (progress * 100).round();
 
     return Container(
@@ -311,7 +426,8 @@ class HomePage extends StatelessWidget {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xFF7B7BFF).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
@@ -373,7 +489,7 @@ class HomePage extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () => _onSubmitButtonPressed(context),
             icon: const Icon(Icons.upload_file_rounded, size: 18),
             label: const Text('Submit Task'),
             style: ElevatedButton.styleFrom(

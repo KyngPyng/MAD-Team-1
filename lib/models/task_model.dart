@@ -16,4 +16,6 @@ class TaskModel {
       completed: (json['completed'] as bool?) ?? false,
     );
   }
+
+  get isCompleted => null;
 }

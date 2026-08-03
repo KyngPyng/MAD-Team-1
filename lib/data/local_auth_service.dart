@@ -24,8 +24,14 @@ class LocalAuthService {
   static const _passwordKey = 'teamSync.password';
   static const _roleKey = 'teamSync.role';
 
+  // Demo Learner Credentials
   static const demoEmail = 'demo@teamsync.com';
   static const demoPassword = 'Demo@123';
+
+  // Admin Preset Credentials & Secret Code
+  static const adminEmail = 'admin@teamsync.com';
+  static const adminPassword = 'Admin@123';
+  static const adminSecretCode = 'TS-8942-ADM';
 
   Future<void> saveRegistration({
     required String name,
@@ -60,23 +66,50 @@ class LocalAuthService {
     required String email,
     required String password,
     required String fallbackRole,
+    String? secretCode,
   }) async {
-    final saved = await readSavedCredentials();
-    if (saved != null &&
-        saved.email.toLowerCase() == email.toLowerCase() &&
-        saved.password == password) {
-      return saved;
+    final cleanEmail = email.trim().toLowerCase();
+    final cleanPassword = password.trim();
+    final cleanSecretCode = secretCode?.trim();
+    final normalizedRole = fallbackRole.trim().toLowerCase();
+
+    // 1. DIRECT ADMIN CHECK (Check email + password first, normalize role)
+    if (normalizedRole == 'admin' || cleanEmail == adminEmail.toLowerCase()) {
+      if (cleanEmail != adminEmail.toLowerCase()) {
+        return null;
+      }
+      if (cleanPassword != adminPassword) {
+        return null;
+      }
+      // Validate secret code if provided or required
+      if (cleanSecretCode != null && cleanSecretCode != adminSecretCode) {
+        return null;
+      }
+
+      return const SavedCredentials(
+        name: 'System Admin',
+        email: adminEmail,
+        password: adminPassword,
+        role: 'Admin',
+      );
     }
 
-    final isDemoLogin =
-        email.toLowerCase() == demoEmail && password == demoPassword;
-    if (isDemoLogin) {
-      return SavedCredentials(
+    // 2. DEMO LEARNER CHECK
+    if (cleanEmail == demoEmail.toLowerCase() && cleanPassword == demoPassword) {
+      return const SavedCredentials(
         name: 'Demo User',
         email: demoEmail,
         password: demoPassword,
-        role: fallbackRole,
+        role: 'Learner',
       );
+    }
+
+    // 3. REGISTERED LOCAL USER CHECK
+    final saved = await readSavedCredentials();
+    if (saved != null &&
+        saved.email.trim().toLowerCase() == cleanEmail &&
+        saved.password == cleanPassword) {
+      return saved;
     }
 
     return null;

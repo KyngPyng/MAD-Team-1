@@ -25,14 +25,15 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final secretCodeController = TextEditingController();
 
-  // Roles match the dynamic string checks in ProfileScreen ('Learner' / 'Admin')
   String role = "Learner";
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    secretCodeController.dispose();
     super.dispose();
   }
 
@@ -41,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    // You can pass secretCodeController.text to your auth service if needed
     final session = await LocalAuthService.instance.authenticate(
       email: emailController.text.trim(),
       password: passwordController.text,
@@ -61,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     AppSessionService.instance.setCurrentUser(session);
+    if (!mounted) return;
 
     Navigator.pushReplacement(
       context,
@@ -88,9 +91,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isAdmin = role == "Admin";
+
     return Scaffold(
       backgroundColor: Colors.transparent,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           const _LoginBackdrop(),
@@ -104,8 +109,6 @@ class _LoginPageState extends State<LoginPage> {
                 final topPadding = isCompact ? 8.0 : 20.0;
                 final cardPadding = isCompact ? 16.0 : 24.0;
                 final cardMaxWidth = isCompact ? 400.0 : 420.0;
-                final cardMaxHeight =
-                    constraints.maxHeight - (topPadding * 2) - 16;
                 final logoSize = isCompact ? 82.0 : 110.0;
                 final logoPadding = isCompact
                     ? const EdgeInsets.all(14)
@@ -126,33 +129,32 @@ class _LoginPageState extends State<LoginPage> {
                     16,
                   ),
                   child: Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: cardMaxWidth,
-                        maxHeight: cardMaxHeight,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(32),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: .58),
-                              borderRadius: BorderRadius.circular(32),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: .8),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primary.withValues(
-                                    alpha: .18,
-                                  ),
-                                  blurRadius: 36,
-                                  offset: const Offset(0, 18),
+                    child: SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: cardMaxWidth,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(32),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: .58),
+                                borderRadius: BorderRadius.circular(32),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: .8),
                                 ),
-                              ],
-                            ),
-                            child: SingleChildScrollView(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withValues(
+                                      alpha: .18,
+                                    ),
+                                    blurRadius: 36,
+                                    offset: const Offset(0, 18),
+                                  ),
+                                ],
+                              ),
                               padding: EdgeInsets.all(cardPadding),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -176,138 +178,12 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   SizedBox(height: sectionGap),
-                                  LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      final width = constraints.maxWidth;
-                                      final isStudent = role == "Learner";
-
-                                      return Container(
-                                        height: roleHeight,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withValues(
-                                            alpha: 0.05,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            14,
-                                          ),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            AnimatedPositioned(
-                                              duration: const Duration(
-                                                milliseconds: 250,
-                                              ),
-                                              curve: Curves.easeInOutCubic,
-                                              left: isStudent ? 4 : (width / 2),
-                                              top: 4,
-                                              bottom: 4,
-                                              width: (width / 2) - 4,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withValues(
-                                                            alpha: 0.08,
-                                                          ),
-                                                      blurRadius: 4,
-                                                      offset: const Offset(
-                                                        0,
-                                                        2,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: InkWell(
-                                                    onTap: () => setState(
-                                                      () => role = "Learner",
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          14,
-                                                        ),
-                                                    child: Center(
-                                                      child:
-                                                          AnimatedDefaultTextStyle(
-                                                            duration:
-                                                                const Duration(
-                                                                  milliseconds:
-                                                                      200,
-                                                                ),
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  isCompact
-                                                                  ? 13
-                                                                  : 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: isStudent
-                                                                  ? AppColors
-                                                                        .primary
-                                                                  : Colors
-                                                                        .grey
-                                                                        .shade700,
-                                                            ),
-                                                            child: const Text(
-                                                              "Student",
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: InkWell(
-                                                    onTap: () => setState(
-                                                      () => role = "Admin",
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          14,
-                                                        ),
-                                                    child: Center(
-                                                      child:
-                                                          AnimatedDefaultTextStyle(
-                                                            duration:
-                                                                const Duration(
-                                                                  milliseconds:
-                                                                      200,
-                                                                ),
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  isCompact
-                                                                  ? 13
-                                                                  : 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: !isStudent
-                                                                  ? AppColors
-                                                                        .primary
-                                                                  : Colors
-                                                                        .grey
-                                                                        .shade700,
-                                                            ),
-                                                            child: const Text(
-                                                              "Admin",
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                  _RoleToggleSelector(
+                                    role: role,
+                                    roleHeight: roleHeight,
+                                    isCompact: isCompact,
+                                    onRoleChanged: (selectedRole) {
+                                      setState(() => role = selectedRole);
                                     },
                                   ),
                                   SizedBox(height: fieldGap),
@@ -349,6 +225,36 @@ class _LoginPageState extends State<LoginPage> {
                                             return null;
                                           },
                                         ),
+
+                                        // Animated secret code field for Admin selection
+                                        AnimatedCrossFade(
+                                          firstChild: const SizedBox.shrink(),
+                                          secondChild: Padding(
+                                            padding: EdgeInsets.only(
+                                              top: fieldGap,
+                                            ),
+                                            child: GlassTextField(
+                                              controller: secretCodeController,
+                                              hint: "Admin Secret Code",
+                                              prefixIcon: Icons.key_outlined,
+                                              isPassword: true,
+                                              validator: (value) {
+                                                if (!isAdmin) return null;
+                                                if (value == null ||
+                                                    value.trim().isEmpty) {
+                                                  return 'Secret code is required for Admins';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          crossFadeState: isAdmin
+                                              ? CrossFadeState.showSecond
+                                              : CrossFadeState.showFirst,
+                                          duration: const Duration(
+                                            milliseconds: 250,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -366,8 +272,8 @@ class _LoginPageState extends State<LoginPage> {
                                     onPressed: _login,
                                   ),
                                   SizedBox(height: actionGap),
-                                  Row(
-                                    children: const [
+                                  const Row(
+                                    children: [
                                       Expanded(child: Divider()),
                                       Padding(
                                         padding: EdgeInsets.symmetric(
@@ -407,6 +313,106 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _RoleToggleSelector extends StatelessWidget {
+  final String role;
+  final double roleHeight;
+  final bool isCompact;
+  final ValueChanged<String> onRoleChanged;
+
+  const _RoleToggleSelector({
+    required this.role,
+    required this.roleHeight,
+    required this.isCompact,
+    required this.onRoleChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isStudent = role == "Learner";
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+
+        return Container(
+          height: roleHeight,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Stack(
+            children: [
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOutCubic,
+                left: isStudent ? 4 : (width / 2),
+                top: 4,
+                bottom: 4,
+                width: (width / 2) - 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => onRoleChanged("Learner"),
+                      borderRadius: BorderRadius.circular(14),
+                      child: Center(
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: TextStyle(
+                            fontSize: isCompact ? 13 : 14,
+                            fontWeight: FontWeight.bold,
+                            color: isStudent
+                                ? AppColors.primary
+                                : Colors.grey.shade700,
+                          ),
+                          child: const Text("Student"),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => onRoleChanged("Admin"),
+                      borderRadius: BorderRadius.circular(14),
+                      child: Center(
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: TextStyle(
+                            fontSize: isCompact ? 13 : 14,
+                            fontWeight: FontWeight.bold,
+                            color: !isStudent
+                                ? AppColors.primary
+                                : Colors.grey.shade700,
+                          ),
+                          child: const Text("Admin"),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
